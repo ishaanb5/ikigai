@@ -1,0 +1,8 @@
+PUT http://localhost:3001/api/tasks/62793c9073f27feba36843b3
+Content-Type:application/json
+
+{
+    "title": "Edit task",
+    "description": "edit a task using PUT request",
+    "completed": true
+}

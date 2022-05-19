@@ -1,0 +1,7 @@
+POST http://localhost:3001/api/tasks
+Content-Type: application/json
+
+ {
+    "title": "new task can be saved in database",
+    "description": "adding new task using POST request"
+ }
