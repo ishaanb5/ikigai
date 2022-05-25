@@ -8,7 +8,7 @@ taskRouter
     res.status(200).json(tasks)
   })
   .post(async (req, res) => {
-    const body = req.body
+    const { body } = req
     const task = new Task({
       title: body.title,
       description: body.description,

@@ -13,5 +13,6 @@ module.exports = {
     'linebreak-style': ['error', 'windows'],
     quotes: ['error', 'single'],
     semi: ['error', 'never'],
+    'import/newline-after-import': 0,
   },
 }
