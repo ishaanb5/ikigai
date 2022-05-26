@@ -1,6 +1,10 @@
 import React from 'react'
-const App = () => {
-  return <h1>Ikigai</h1>
-}
+import Tasks from './Tasks'
+const App = () => (
+  <>
+    <h1>Ikigai</h1>
+    <Tasks tasks={tasks} />
+  </>
+)
 
 export default App
