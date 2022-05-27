@@ -28,8 +28,7 @@ Tasks.propTypes = {
       title: PropTypes.string,
       description: PropTypes.string,
       completed: PropTypes.bool,
-      // eslint-disable-next-line comma-dangle
-    })
+    }),
   ),
 }
 
