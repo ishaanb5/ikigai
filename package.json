@@ -4,7 +4,7 @@
   "description": "Ikigai - An everyday task management app",
   "main": "index.js",
   "scripts": {
-    "dev": "(cd backend && npm run dev) && (cd frontend && npm start)",
+    "dev": "(cd backend && npm run dev) & (cd frontend && npm start)",
     "postinstall": "(cd backend && npm install) && (cd frontend && npm install)",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint ."

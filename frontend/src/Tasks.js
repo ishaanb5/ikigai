@@ -1,39 +1,48 @@
-import PropTypes from 'prop-types'
+import { useState, useEffect } from 'react'
 import Task from './Task'
+import taskService from './services/tasks'
 
-const Tasks = ({ tasks }) => {
-  if (tasks === []) {
-    return <p>No pending tasks!</p>
+const Tasks = () => {
+  const [tasks, setTasks] = useState([])
+
+  useEffect(() => {
+    const getTasks = async () => {
+      const intialTasks = await taskService.getAllTasks()
+      setTasks(intialTasks)
+    }
+
+    getTasks()
+  }, [])
+  const handleTaskCompletion = (id) => {
+    const task = tasks.find((t) => t.id === id)
+    const updatedTask = { ...task, completed: !task.completed }
+
+    taskService.updateTask(id, updatedTask)
+    setTasks(
+      tasks.map((t) => {
+        if (t.id === id) return { ...task, completed: !t.completed }
+        return t
+      }),
+    )
   }
-  return (
+
+  return tasks.length === 0 ? (
+    <p>No pending tasks!</p>
+  ) : (
     <ul>
       {tasks.map((task) => (
-        <li>
+        <li key={task.id}>
           <Task
-            key={task.id}
+            id={task.id}
             title={task.title}
             description={task.description}
             completed={task.completed}
+            onChange={handleTaskCompletion}
           />
         </li>
       ))}
     </ul>
   )
-}
-
-Tasks.propTypes = {
-  tasks: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.number,
-      title: PropTypes.string,
-      description: PropTypes.string,
-      completed: PropTypes.bool,
-    }),
-  ),
-}
-
-Tasks.defaultProps = {
-  tasks: [],
 }
 
 export default Tasks

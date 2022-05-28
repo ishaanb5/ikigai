@@ -1,6 +1,14 @@
 import axios from 'axios'
 const baseUrl = '/api/tasks'
 
-const getTasks = () => axios.get(baseUrl).then((response) => response.data)
+const getAllTasks = async () => {
+  const request = await axios.get(baseUrl)
+  return request.data
+}
 
-export default { getTasks }
+const updateTask = async (id, updatedTask) => {
+  const request = await axios.put(`${baseUrl}/${id}`, updatedTask)
+  return request.data
+}
+
+export default { getAllTasks, updateTask }

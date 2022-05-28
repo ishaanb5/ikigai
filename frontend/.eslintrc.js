@@ -11,5 +11,6 @@ module.exports = {
     'import/newline-after-import': 0,
     'react/react-in-jsx-scope': 0,
     'react/function-component-definition': 0,
+    'object-curly-newline': 0,
   },
 }

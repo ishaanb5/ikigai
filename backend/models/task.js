@@ -5,17 +5,21 @@ const mongoose = require('mongoose')
 const taskSchema = mongoose.Schema({
   title: {
     type: String,
+    required: true,
     default: 'No Title',
   },
-  description: String,
-  completed: Boolean,
+  description: { type: String, default: '' },
+  completed: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const Task = mongoose.model('Task', taskSchema)
 
 taskSchema.set('toJSON', {
   transform: (doc, ret) => {
-    ret.id = ret._id
+    ret.id = ret._id.toString()
     delete ret._id
     delete ret.__v
 
