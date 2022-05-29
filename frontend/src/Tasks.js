@@ -4,6 +4,7 @@ import taskService from './services/tasks'
 
 const Tasks = () => {
   const [tasks, setTasks] = useState([])
+  const [newTask, setNewTask] = useState({ title: '', description: '' })
 
   useEffect(() => {
     const getTasks = async () => {
@@ -13,6 +14,7 @@ const Tasks = () => {
 
     getTasks()
   }, [])
+
   const handleTaskCompletion = (id) => {
     const task = tasks.find((t) => t.id === id)
     const updatedTask = { ...task, completed: !task.completed }
@@ -26,10 +28,26 @@ const Tasks = () => {
     )
   }
 
+  const handleAddTask = async (e) => {
+    if (e.code === 'Enter') {
+      const savedTask = await taskService.createTask(newTask)
+
+      setTasks(tasks.concat(savedTask))
+      setNewTask({ title: '', description: '' })
+    }
+  }
+
   return tasks.length === 0 ? (
     <p>No pending tasks!</p>
   ) : (
     <ul>
+      <input
+        type="text"
+        value={newTask.title}
+        placeholder="Add a new task. Press enter to save"
+        onKeyDown={handleAddTask}
+        onChange={(e) => setNewTask({ title: e.target.value })}
+      />
       {tasks.map((task) => (
         <li key={task.id}>
           <Task

@@ -11,4 +11,9 @@ const updateTask = async (id, updatedTask) => {
   return request.data
 }
 
-export default { getAllTasks, updateTask }
+const createTask = async (task) => {
+  const request = await axios.post(baseUrl, task)
+  return request.data
+}
+
+export default { getAllTasks, createTask, updateTask }
