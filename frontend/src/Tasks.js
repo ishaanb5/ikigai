@@ -37,6 +37,12 @@ const Tasks = () => {
     }
   }
 
+  const handleTaskDelete = async (id) => {
+    await taskService.deleteTask(id)
+    const updatedTasks = tasks.filter((task) => task.id !== id)
+    setTasks(updatedTasks)
+  }
+
   return tasks.length === 0 ? (
     <p>No pending tasks!</p>
   ) : (
@@ -56,6 +62,7 @@ const Tasks = () => {
             description={task.description}
             completed={task.completed}
             onChange={handleTaskCompletion}
+            handleDelete={handleTaskDelete}
           />
         </li>
       ))}
