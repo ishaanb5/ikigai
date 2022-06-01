@@ -37,9 +37,19 @@ const Tasks = () => {
     }
   }
 
-  const handleTaskDelete = async (id) => {
+  const handleDeleteTask = async (id) => {
     await taskService.deleteTask(id)
     const updatedTasks = tasks.filter((task) => task.id !== id)
+    setTasks(updatedTasks)
+  }
+
+  const handleUpdateTask = async (id, task) => {
+    await taskService.updateTask(id, task)
+    const updatedTasks = tasks.map((t) => {
+      if (t.id !== id) return t
+      return task
+    })
+
     setTasks(updatedTasks)
   }
 
@@ -61,8 +71,9 @@ const Tasks = () => {
             title={task.title}
             description={task.description}
             completed={task.completed}
-            onChange={handleTaskCompletion}
-            handleDelete={handleTaskDelete}
+            handleCompletion={handleTaskCompletion}
+            handleDelete={handleDeleteTask}
+            handleUpdate={handleUpdateTask}
           />
         </li>
       ))}
