@@ -13,6 +13,15 @@ const taskSchema = mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  dueBy: {
+    type: Date,
+    default: () => {
+      const date = new Date()
+      date.setHours(23, 59, 59, 59)
+
+      return date
+    },
+  },
 })
 
 const Task = mongoose.model('Task', taskSchema)
@@ -20,9 +29,9 @@ const Task = mongoose.model('Task', taskSchema)
 taskSchema.set('toJSON', {
   transform: (doc, ret) => {
     ret.id = ret._id.toString()
+
     delete ret._id
     delete ret.__v
-
     return ret
   },
 })

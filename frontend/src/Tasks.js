@@ -74,6 +74,7 @@ const Tasks = () => {
             handleCompletion={handleTaskCompletion}
             handleDelete={handleDeleteTask}
             handleUpdate={handleUpdateTask}
+            dueBy={task.dueBy}
           />
         </li>
       ))}

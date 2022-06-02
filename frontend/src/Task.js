@@ -8,6 +8,7 @@ const Task = ({
   handleCompletion,
   handleDelete,
   handleUpdate,
+  dueBy,
 }) => {
   const [editable, setEditable] = useState(false)
   const [updatedTitle, setUpdatedTitle] = useState(title)
@@ -58,7 +59,7 @@ const Task = ({
             }
           }}
         >
-          {title}
+          {`${title} - ${dueBy}`}
         </span>
       )}
       <button
@@ -81,6 +82,7 @@ Task.propTypes = {
   handleDelete: PropTypes.func.isRequired,
   handleCompletion: PropTypes.func.isRequired,
   handleUpdate: PropTypes.func.isRequired,
+  dueBy: PropTypes.objectOf(Date).isRequired,
 }
 
 export default Task
