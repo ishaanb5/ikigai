@@ -59,7 +59,7 @@ const Task = ({
             }
           }}
         >
-          {`${title} - ${dueBy}`}
+          {title}-{dueBy}
         </span>
       )}
       <button
@@ -82,7 +82,11 @@ Task.propTypes = {
   handleDelete: PropTypes.func.isRequired,
   handleCompletion: PropTypes.func.isRequired,
   handleUpdate: PropTypes.func.isRequired,
-  dueBy: PropTypes.objectOf(Date).isRequired,
+  dueBy: PropTypes.objectOf(Date),
+}
+
+Task.defaultProps = {
+  dueBy: null,
 }
 
 export default Task

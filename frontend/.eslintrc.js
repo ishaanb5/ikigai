@@ -12,5 +12,6 @@ module.exports = {
     'react/react-in-jsx-scope': 0,
     'react/function-component-definition': 0,
     'object-curly-newline': 0,
+    'react/jsx-one-expression-per-line': 0,
   },
 }

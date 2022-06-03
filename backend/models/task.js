@@ -15,12 +15,6 @@ const taskSchema = mongoose.Schema({
   },
   dueBy: {
     type: Date,
-    default: () => {
-      const date = new Date()
-      date.setHours(23, 59, 59, 59)
-
-      return date
-    },
   },
 })
 
