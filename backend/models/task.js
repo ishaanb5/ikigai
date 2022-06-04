@@ -15,6 +15,7 @@ const taskSchema = mongoose.Schema({
   },
   dueBy: {
     type: Date,
+    default: null,
   },
 })
 

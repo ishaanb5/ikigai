@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import PropTypes from 'prop-types'
+import DueDate from './DueDate'
 
 const Task = ({
   id,
@@ -10,13 +11,15 @@ const Task = ({
   handleUpdate,
   dueBy,
 }) => {
-  const [editable, setEditable] = useState(false)
+  const [editTaskTitle, setEditTaskTitle] = useState(false)
   const [updatedTitle, setUpdatedTitle] = useState(title)
-  const inputRef = useRef()
+  const [dueDate, setDueDate] = useState(new Date())
+  const [editDueDate, setEditDueDate] = useState(false)
+  const taskTitleInputRef = useRef()
 
   useEffect(() => {
-    if (editable) {
-      inputRef.current.focus()
+    if (editTaskTitle) {
+      taskTitleInputRef.current.focus()
     }
   })
 
@@ -28,9 +31,9 @@ const Task = ({
         id="task"
         onChange={() => handleCompletion(id)}
       />
-      {editable ? (
+      {editTaskTitle ? (
         <input
-          ref={inputRef}
+          ref={taskTitleInputRef}
           value={updatedTitle}
           onChange={(e) => {
             setUpdatedTitle(e.target.value)
@@ -38,7 +41,7 @@ const Task = ({
           }}
           onBlur={() => {
             handleUpdate(id, { id, completed, title: updatedTitle })
-            setEditable(false)
+            setEditTaskTitle(false)
           }}
           onKeyDown={(e) => {
             if (e.key === 'Enter') {
@@ -51,11 +54,11 @@ const Task = ({
           role="button"
           tabIndex={0}
           onClick={() => {
-            setEditable(true)
+            setEditTaskTitle(true)
           }}
           onKeyDown={(e) => {
             if (e.key === 'Enter') {
-              setEditable(true)
+              setEditTaskTitle(true)
             }
           }}
         >
@@ -71,6 +74,25 @@ const Task = ({
       >
         <img src="/images/icons/dark/delete.png" alt="icon to delete tasks" />
       </button>
+
+      <button
+        type="button"
+        onClick={() => {
+          setEditDueDate(true)
+        }}
+      >
+        <img
+          src="/images/icons/dark/calendar.png"
+          alt="icon to set due date for a task"
+        />
+      </button>
+      {editDueDate && (
+        <DueDate
+          dueDate={dueDate}
+          setDueDate={setDueDate}
+          visible={editDueDate}
+        />
+      )}
     </div>
   )
 }
