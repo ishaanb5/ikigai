@@ -24,13 +24,15 @@ const Task = ({
   })
 
   return (
-    <div>
+    <>
       <input
+        className="task__checkbox"
         type="checkbox"
         checked={completed}
         id="task"
         onChange={() => handleCompletion(id)}
       />
+      <span className="task__custom-checkbox" />
       {editTaskTitle ? (
         <input
           ref={taskTitleInputRef}
@@ -93,7 +95,7 @@ const Task = ({
           visible={editDueDate}
         />
       )}
-    </div>
+    </>
   )
 }
 

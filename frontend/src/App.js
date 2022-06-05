@@ -1,14 +1,12 @@
-import React from 'react'
-import Tasks from './Tasks'
+import React, { useState } from 'react'
+import TasksList from './TasksList'
 
 import './index.css'
 import 'react-widgets/styles.css'
 
-const App = () => (
-  <>
-    <h1>Ikigai</h1>
-    <Tasks />
-  </>
-)
+const App = () => {
+  const [listName] = useState('All Tasks')
+  return <TasksList listName={listName} />
+}
 
 export default App

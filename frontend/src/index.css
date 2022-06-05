@@ -1,0 +1,48 @@
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #121212;
+  color: #eeeeee;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* ========== Tasklist ========== */
+
+.tasklist {
+  width: 50%;
+  padding: 20px;
+  border: solid rgba(121, 121, 121, 0.25);
+  border-width: 0 1px;
+  margin: 0 auto;
+  height: 100vh;
+}
+
+.tasklist__list-name {
+  margin: 0 10px 5px;
+  font-family: sans-serif;
+  font-weight: 300;
+}
+
+.tasklist__new-task-input {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  border: none;
+  margin-top: 10px;
+  font-size: 0.9em;
+  background-color: #252222;
+  color: #e4d9d9;
+}
+
+.tasklist__list {
+  list-style: none;
+  padding: 0;
+}
+
+/* ========== Task ========== */
+
+.task {
+  border-bottom: solid rgba(121, 121, 121, 0.25) 1px;
+  width: 100%;
+}

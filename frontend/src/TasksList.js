@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react'
+import PropTypes from 'prop-types'
 import Task from './Task'
 import taskService from './services/tasks'
 
-const Tasks = () => {
+const Tasks = ({ listName }) => {
   const [tasks, setTasks] = useState([])
   const [newTask, setNewTask] = useState({ title: '', description: '' })
 
@@ -53,33 +54,45 @@ const Tasks = () => {
     setTasks(updatedTasks)
   }
 
-  return tasks.length === 0 ? (
-    <p>No pending tasks!</p>
-  ) : (
-    <ul>
-      <input
-        type="text"
-        value={newTask.title}
-        placeholder="Add a new task. Press enter to save"
-        onKeyDown={handleAddTask}
-        onChange={(e) => setNewTask({ title: e.target.value })}
-      />
-      {tasks.map((task) => (
-        <li key={task.id}>
-          <Task
-            id={task.id}
-            title={task.title}
-            description={task.description}
-            completed={task.completed}
-            handleCompletion={handleTaskCompletion}
-            handleDelete={handleDeleteTask}
-            handleUpdate={handleUpdateTask}
-            dueBy={task.dueBy}
+  return (
+    <div className="tasklist">
+      <h1 className="tasklist__list-name">{listName}</h1>
+      {tasks.length === 0 ? (
+        <p>No pending tasks!</p>
+      ) : (
+        <div>
+          <input
+            className="tasklist__new-task-input"
+            type="text"
+            value={newTask.title}
+            placeholder=" + Add a new task, press Enter to save."
+            onKeyDown={handleAddTask}
+            onChange={(e) => setNewTask({ title: e.target.value })}
           />
-        </li>
-      ))}
-    </ul>
+          <ul className="tasklist__list">
+            {tasks.map((task) => (
+              <li key={task.id} className="task">
+                <Task
+                  id={task.id}
+                  title={task.title}
+                  description={task.description}
+                  completed={task.completed}
+                  handleCompletion={handleTaskCompletion}
+                  handleDelete={handleDeleteTask}
+                  handleUpdate={handleUpdateTask}
+                  dueBy={task.dueBy}
+                />
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
   )
+}
+
+Tasks.propTypes = {
+  listName: PropTypes.string.isRequired,
 }
 
 export default Tasks
