@@ -17,8 +17,8 @@ const taskSchema = mongoose.Schema({
     type: Date,
     default: null,
   },
+  list: { type: mongoose.Schema.Types.ObjectId, ref: 'List' },
 })
-
 const Task = mongoose.model('Task', taskSchema)
 
 taskSchema.set('toJSON', {
