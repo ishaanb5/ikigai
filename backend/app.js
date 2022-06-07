@@ -6,6 +6,7 @@ const { MONGODB_URL } = require('./utils/config')
 const logger = require('./utils/logger')
 
 const taskRouter = require('./controllers/task')
+const listRouter = require('./controllers/list')
 const middleware = require('./utils/middleware')
 
 logger.info(`connecting to mongodb: ${MONGODB_URL}`)
@@ -16,6 +17,7 @@ mongoose
 
 app.use(express.json())
 app.use('/api/tasks', taskRouter)
+app.use('/api/lists', listRouter)
 app.use('/', middleware.unknownEndpoint)
 app.use('/', middleware.errorHandler)
 

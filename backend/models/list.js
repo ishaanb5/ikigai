@@ -19,6 +19,16 @@ const listSchema = new mongoose.Schema({
     */
 })
 
-const List = mongoose.Model('List', listSchema)
+listSchema.set('toJSON', {
+  transform: (doc, ret) => {
+    ret.id = ret._id.toString()
+    delete ret._id
+    delete ret.__v
+
+    return ret
+  },
+})
+
+const List = mongoose.model('List', listSchema)
 
 module.exports = List
