@@ -1,10 +1,21 @@
 const listRouter = require('express').Router()
 const List = require('../models/list')
+const Task = require('../models/task')
 
 listRouter
   .route('/')
   .get(async (req, res) => {
-    const lists = await List.find({})
+    let lists = await List.find({})
+    lists = lists.reduce((result, list) => {
+      const updatedList = {
+        name: list.name,
+        id: list.id,
+        totalTasks: list.tasks.length,
+      }
+      result.push(updatedList)
+      return result
+    }, [])
+
     return res.status(200).json(lists)
   })
   .post(async (req, res) => {
@@ -14,9 +25,32 @@ listRouter
     return res.status(201).json(newList)
   })
 
-// view a list
-// view all lists
-// create  a list
-// delete a list
-// update a list
+listRouter
+  .route('/:id')
+  .get(async (req, res) => {
+    const list = await List.findById(req.params.id).populate('tasks')
+
+    if (list === null) {
+      return res.status(404).end()
+    }
+    return res.status(200).json(list)
+  })
+  .put(async (req, res) => {
+    const updatedList = await List.findByIdAndUpdate(
+      req.params.id,
+      {
+        ...req.body,
+      },
+      { new: true },
+    ).select({ tasks: 0 })
+
+    res.status(201).send(updatedList)
+  })
+  .delete(async (req, res) => {
+    await Task.deleteMany({ list: req.params.id })
+    await List.findByIdAndDelete(req.params.id)
+
+    res.status(204).end()
+  })
+
 module.exports = listRouter

@@ -1,6 +1,0 @@
-POST http://localhost:3001/api/lists 
-Content-Type: application/json
-
-{
-    "name": "Inbox"
-}

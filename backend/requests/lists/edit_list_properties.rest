@@ -1,0 +1,6 @@
+PUT http://localhost:3001/api/lists/62a0dc0e1e04176f7d05603c
+Content-Type: application/json
+
+{
+    "name": "Test"
+}

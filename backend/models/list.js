@@ -7,7 +7,16 @@ const listSchema = new mongoose.Schema({
     default: 'Inbox',
     unique: true,
   },
-  tasks: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Task' }],
+  tasks: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Task',
+    },
+  ],
+  editable: {
+    type: Boolean,
+    default: true,
+  },
 
   /*
     will implement later:
@@ -21,7 +30,7 @@ const listSchema = new mongoose.Schema({
 
 listSchema.set('toJSON', {
   transform: (doc, ret) => {
-    ret.id = ret._id.toString()
+    ret.id = ret._id
     delete ret._id
     delete ret.__v
 
