@@ -2,6 +2,7 @@ POST http://localhost:3001/api/tasks
 Content-Type: application/json
 
  {
-    "title": "new task can be saved in database",
-    "description": "adding new task using POST request"
+    "title": "task added to test list",
+    "description": "adding new task using POST request",
+    "listId": "62a0e3014ddb3177096b5e32"
  }
