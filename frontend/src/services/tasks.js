@@ -1,23 +1,23 @@
 import axios from 'axios'
 const baseUrl = '/api/tasks'
 
-const getAllTasks = async () => {
-  const request = await axios.get(baseUrl)
+const getAll = async () => {
+  const request = await axios.get(`${baseUrl}/all`)
   return request.data
 }
 
-const updateTask = async (id, updatedTask) => {
+const update = async (id, updatedTask) => {
   const request = await axios.put(`${baseUrl}/${id}`, updatedTask)
   return request.data
 }
 
-const createTask = async (task) => {
+const create = async (task) => {
   const request = await axios.post(baseUrl, task)
   return request.data
 }
 
-const deleteTask = async (id) => {
+const remove = async (id) => {
   await axios.delete(`${baseUrl}/${id}`)
 }
 
-export default { getAllTasks, createTask, updateTask, deleteTask }
+export default { getAll, create, update, remove }
