@@ -14,5 +14,6 @@ module.exports = {
     quotes: ['error', 'single'],
     semi: ['error', 'never'],
     'import/newline-after-import': 0,
+    'operator-linebreak': 0,
   },
 }
