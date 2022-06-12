@@ -3,11 +3,22 @@ const taskRouter = require('express').Router()
 const Task = require('../models/task')
 const List = require('../models/list')
 
+taskRouter.route('/all').get(async (req, res) => {
+  const tasks = await Task.find({}).populate('list', 'name')
+  res.status(200).json(tasks)
+})
+
 taskRouter
-  .route('/')
+  .route('/:listId')
   .get(async (req, res) => {
-    const tasks = await Task.find({}).populate('list', 'name')
-    res.status(200).json(tasks)
+    const list =
+      req.params.listId === 'inbox'
+        ? await List.findOne({ name: 'Inbox' })
+        : await List.findOne({ _id: req.params.listId })
+
+    const tasksForList = await Task.find({ list: list._id })
+
+    res.status(200).json(tasksForList)
   })
   .post(async (req, res) => {
     const { body } = req
@@ -19,7 +30,7 @@ taskRouter
     })
     await task.save()
 
-    const list = await List.findById(task.list)
+    const list = await List.findById(task.list.toString())
     list.tasks.push(task._id)
     await list.save()
 

@@ -6,4 +6,9 @@ const getAll = async () => {
   return request.data
 }
 
-export default { getAll }
+const getById = async (listId) => {
+  const request = await axios.get(`${baseUrl}/${listId}`)
+  return request.data
+}
+
+export default { getAll, getById }

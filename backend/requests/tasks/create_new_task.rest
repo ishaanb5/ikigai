@@ -1,8 +1,8 @@
-POST http://localhost:3001/api/tasks
+POST http://localhost:3001/api/tasks/62a0d2db02dbceeb78a33659
 Content-Type: application/json
 
  {
-    "title": "task added to test list",
-    "description": "adding new task using POST request",
-    "listId": "62a0e3014ddb3177096b5e32"
+    "title": "Add first task to list Ikigai",
+    "description": "",
+    "listId": "62a0d2db02dbceeb78a33659"
  }

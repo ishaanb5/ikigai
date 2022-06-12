@@ -28,7 +28,10 @@ listRouter
 listRouter
   .route('/:id')
   .get(async (req, res) => {
-    const list = await List.findById(req.params.id).populate('tasks')
+    const list =
+      req.params.id === 'inbox'
+        ? await List.findOne({ name: 'Inbox' }).populate('tasks')
+        : await List.findById(req.params.id).populate('tasks')
 
     if (list === null) {
       return res.status(404).end()

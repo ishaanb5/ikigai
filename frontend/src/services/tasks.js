@@ -11,8 +11,8 @@ const update = async (id, updatedTask) => {
   return request.data
 }
 
-const create = async (task) => {
-  const request = await axios.post(baseUrl, task)
+const create = async (listId, task) => {
+  const request = await axios.post(`${baseUrl}/${listId}`, task)
   return request.data
 }
 

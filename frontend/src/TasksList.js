@@ -3,24 +3,24 @@ import PropTypes from 'prop-types'
 import Task from './Task'
 import taskService from './services/tasks'
 
-const Tasks = ({ listName }) => {
-  const [tasks, setTasks] = useState([])
-  const [newTask, setNewTask] = useState({ title: '', description: '' })
+const Tasks = ({ listName, listId, listTasks }) => {
+  const [tasks, setTasks] = useState(listTasks)
+  const [newTask, setNewTask] = useState({
+    title: '',
+    description: '',
+    completed: false,
+    listId,
+  })
 
   useEffect(() => {
-    const getTasks = async () => {
-      const intialTasks = await taskService.getAllTasks()
-      setTasks(intialTasks)
-    }
-
-    getTasks()
-  }, [])
+    setTasks(listTasks)
+  }, [listTasks])
 
   const handleTaskCompletion = (id) => {
     const task = tasks.find((t) => t.id === id)
     const updatedTask = { ...task, completed: !task.completed }
 
-    taskService.updateTask(id, updatedTask)
+    taskService.update(id, updatedTask)
     setTasks(
       tasks.map((t) => {
         if (t.id === id) return { ...task, completed: !t.completed }
@@ -31,7 +31,7 @@ const Tasks = ({ listName }) => {
 
   const handleAddTask = async (e) => {
     if (e.code === 'Enter') {
-      const savedTask = await taskService.createTask(newTask)
+      const savedTask = await taskService.create(listId, newTask)
 
       setTasks(tasks.concat(savedTask))
       setNewTask({ title: '', description: '' })
@@ -39,13 +39,13 @@ const Tasks = ({ listName }) => {
   }
 
   const handleDeleteTask = async (id) => {
-    await taskService.deleteTask(id)
+    await taskService.remove(id)
     const updatedTasks = tasks.filter((task) => task.id !== id)
     setTasks(updatedTasks)
   }
 
   const handleUpdateTask = async (id, task) => {
-    await taskService.updateTask(id, task)
+    await taskService.update(id, task)
     const updatedTasks = tasks.map((t) => {
       if (t.id !== id) return t
       return task
@@ -67,7 +67,7 @@ const Tasks = ({ listName }) => {
             value={newTask.title}
             placeholder=" + Add a new task, press Enter to save."
             onKeyDown={handleAddTask}
-            onChange={(e) => setNewTask({ title: e.target.value })}
+            onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
           />
           <ul className="tasklist__list">
             {tasks.map((task) => (
@@ -92,7 +92,23 @@ const Tasks = ({ listName }) => {
 }
 
 Tasks.propTypes = {
-  listName: PropTypes.string.isRequired,
+  listName: PropTypes.string,
+  listId: PropTypes.string,
+  listTasks: PropTypes.arrayOf(
+    PropTypes.shape({
+      title: PropTypes.string,
+      description: PropTypes.string,
+      completed: PropTypes.bool,
+      dueBy: PropTypes.string,
+      list: PropTypes.string,
+    }),
+  ),
+}
+
+Tasks.defaultProps = {
+  listName: '',
+  listId: '',
+  listTasks: [],
 }
 
 export default Tasks
