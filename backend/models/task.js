@@ -15,7 +15,6 @@ const taskSchema = mongoose.Schema({
   },
   dueBy: {
     type: Date,
-    default: null,
   },
   list: {
     type: mongoose.Schema.Types.ObjectId,

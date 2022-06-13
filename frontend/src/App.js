@@ -3,7 +3,6 @@ import TasksList from './TasksList'
 import Lists from './Lists'
 
 import './index.css'
-import 'react-widgets/styles.css'
 
 const App = () => {
   const [currentList, setCurrentList] = useState('All Tasks')

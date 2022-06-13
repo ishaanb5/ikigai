@@ -1,6 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
 import PropTypes from 'prop-types'
-import DueDate from './DueDate'
 
 const Task = ({
   id,
@@ -11,15 +10,13 @@ const Task = ({
   handleUpdate,
   dueBy,
 }) => {
-  const [editTaskTitle, setEditTaskTitle] = useState(false)
+  const [editable, setEditable] = useState(false)
   const [updatedTitle, setUpdatedTitle] = useState(title)
-  const [dueDate, setDueDate] = useState(new Date())
-  const [editDueDate, setEditDueDate] = useState(false)
-  const taskTitleInputRef = useRef()
+  const inputRef = useRef()
 
   useEffect(() => {
-    if (editTaskTitle) {
-      taskTitleInputRef.current.focus()
+    if (editable) {
+      inputRef.current.focus()
     }
   })
 
@@ -32,10 +29,9 @@ const Task = ({
         id="task"
         onChange={() => handleCompletion(id)}
       />
-      <span className="task__custom-checkbox" />
-      {editTaskTitle ? (
+      {editable ? (
         <input
-          ref={taskTitleInputRef}
+          ref={inputRef}
           value={updatedTitle}
           onChange={(e) => {
             setUpdatedTitle(e.target.value)
@@ -43,7 +39,7 @@ const Task = ({
           }}
           onBlur={() => {
             handleUpdate(id, { id, completed, title: updatedTitle })
-            setEditTaskTitle(false)
+            setEditable(false)
           }}
           onKeyDown={(e) => {
             if (e.key === 'Enter') {
@@ -56,11 +52,11 @@ const Task = ({
           role="button"
           tabIndex={0}
           onClick={() => {
-            setEditTaskTitle(true)
+            setEditable(true)
           }}
           onKeyDown={(e) => {
             if (e.key === 'Enter') {
-              setEditTaskTitle(true)
+              setEditable(true)
             }
           }}
         >
@@ -76,25 +72,6 @@ const Task = ({
       >
         <img src="/images/icons/dark/delete.png" alt="icon to delete tasks" />
       </button>
-
-      <button
-        type="button"
-        onClick={() => {
-          setEditDueDate(true)
-        }}
-      >
-        <img
-          src="/images/icons/dark/calendar.png"
-          alt="icon to set due date for a task"
-        />
-      </button>
-      {editDueDate && (
-        <DueDate
-          dueDate={dueDate}
-          setDueDate={setDueDate}
-          visible={editDueDate}
-        />
-      )}
     </>
   )
 }
