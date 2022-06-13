@@ -9,7 +9,7 @@ const Tasks = ({ listName }) => {
 
   useEffect(() => {
     const getTasks = async () => {
-      const intialTasks = await taskService.getAllTasks()
+      const intialTasks = await taskService.getAll()
       setTasks(intialTasks)
     }
 
@@ -31,7 +31,7 @@ const Tasks = ({ listName }) => {
 
   const handleAddTask = async (e) => {
     if (e.code === 'Enter') {
-      const savedTask = await taskService.createTask(newTask)
+      const savedTask = await taskService.create(newTask)
 
       setTasks(tasks.concat(savedTask))
       setNewTask({ title: '', description: '' })
@@ -39,13 +39,13 @@ const Tasks = ({ listName }) => {
   }
 
   const handleDeleteTask = async (id) => {
-    await taskService.deleteTask(id)
+    await taskService.remove(id)
     const updatedTasks = tasks.filter((task) => task.id !== id)
     setTasks(updatedTasks)
   }
 
   const handleUpdateTask = async (id, task) => {
-    await taskService.updateTask(id, task)
+    await taskService.update(id, task)
     const updatedTasks = tasks.map((t) => {
       if (t.id !== id) return t
       return task
