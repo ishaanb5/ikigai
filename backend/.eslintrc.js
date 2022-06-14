@@ -13,5 +13,9 @@ module.exports = {
     'linebreak-style': ['error', 'windows'],
     quotes: ['error', 'single'],
     semi: ['error', 'never'],
+    'import/no-extraneous-dependencies': [
+      'error',
+      { devDependencies: '**/*.test.js' },
+    ],
   },
 }
