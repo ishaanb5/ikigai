@@ -9,12 +9,13 @@ const taskRouter = require('./controllers/task')
 const listRouter = require('./controllers/list')
 const middleware = require('./utils/middleware')
 
-logger.info(`connecting to mongodb: ${MONGODB_URL}`)
-mongoose
-  .connect(MONGODB_URL)
-  .then(() => logger.info('succesfully connected to mongodb'))
-  .catch((error) => logger.error('error connecting to mongodb', error))
-
+if (!process.env.NODE_ENV === 'test') {
+  logger.info(`connecting to mongodb: ${MONGODB_URL}`)
+  mongoose
+    .connect(MONGODB_URL)
+    .then(() => logger.info('succesfully connected to mongodb'))
+    .catch((error) => logger.error('error connecting to mongodb', error))
+}
 app.use(express.json())
 app.use('/api/tasks', taskRouter)
 app.use('/api/lists', listRouter)

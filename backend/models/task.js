@@ -34,6 +34,7 @@ taskSchema.set('toJSON', {
 })
 
 // eslint-disable-next-line func-names
+// default value is being added to maintain backwards compatibility with tasks that were created when lists were not an option
 taskSchema.pre('validate', async function () {
   if (!this.list) {
     this.list = await List.findOne({ name: 'Inbox' })
