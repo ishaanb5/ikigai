@@ -7,10 +7,13 @@ const helper = require('./test_helper')
 
 const api = supertest(app)
 
-beforeAll(async () => {
+beforeEach(async () => {
   await List.create(helper.initialLists)
-  const task = new Task(helper.initialTasks[0])
-  await task.save()
+  await Task.create(helper.initialTasks)
+})
+
+afterAll(() => {
+  mongoose.connection.close()
 })
 
 describe('when some tasks are already created', () => {
@@ -19,11 +22,5 @@ describe('when some tasks are already created', () => {
       .get('/api/tasks')
       .expect('Content-Type', /json/)
       .expect(200)
-  })
-
-  test('a particular task is returned', async () => {
-    const request = await api.get('/api/tasks').expect(200)
-
-    expect(request).toContain()
   })
 })
