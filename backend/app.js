@@ -9,7 +9,7 @@ const taskRouter = require('./controllers/task')
 const listRouter = require('./controllers/list')
 const middleware = require('./utils/middleware')
 
-if (!process.env.NODE_ENV === 'test') {
+if (process.env.NODE_ENV !== 'test') {
   logger.info(`connecting to mongodb: ${MONGODB_URL}`)
   mongoose
     .connect(MONGODB_URL)
