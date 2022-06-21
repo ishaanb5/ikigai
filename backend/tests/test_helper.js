@@ -14,10 +14,10 @@ const initialTasks = [
     list: new mongoose.Types.ObjectId('507f191e810c19729de860ea'),
   },
   {
-    title: 'item 3',
-    description: 'description about task 3',
+    title: 'Do Laundry',
+    description: 'remember to select pre-wash',
     completed: false,
-    list: new mongoose.Types.ObjectId('507f191e810c19729de860ea'),
+    list: new mongoose.Types.ObjectId('507f191e810c19729de861ea'),
   },
 ]
 
@@ -27,6 +27,12 @@ const initialLists = [
     tasks: [],
     editable: false,
     _id: '507f191e810c19729de860ea',
+  },
+  {
+    name: 'Chores',
+    tasks: [],
+    editable: false,
+    _id: '507f191e810c19729de861ea',
   },
 ]
 
