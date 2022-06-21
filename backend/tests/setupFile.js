@@ -9,6 +9,6 @@ beforeEach(async () => {
   }
 })
 
-afterAll(() => {
-  mongoose.connection.close()
+beforeAll(async () => {
+  mongoose.connect(process.env.MONGODB_URL, { dbName: 'test' })
 })

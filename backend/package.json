@@ -6,7 +6,7 @@
   "scripts": {
     "start": "cross-env NODE_ENV=production node index.js",
     "dev": "cross-env NODE_ENV=development nodemon index.js",
-    "test": "cross-env NODE_ENV=test jest --verbose --runInBand --forceExit --watchAll",
+    "test": "cross-env NODE_ENV=test jest --verbose --runInBand --forceExit",
     "eslint": "eslint ."
   },
   "keywords": [],
@@ -22,6 +22,7 @@
     "cross-env": "^7.0.3",
     "eslint": "^8.15.0",
     "jest": "^28.1.1",
+    "mongodb-memory-server": "^8.6.0",
     "nodemon": "^2.0.16",
     "supertest": "^6.2.3"
   }

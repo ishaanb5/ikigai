@@ -26,7 +26,7 @@ const initialLists = [
     name: 'Inbox',
     tasks: [],
     editable: false,
-    _id: new mongoose.Types.ObjectId('507f191e810c19729de860ea'),
+    _id: '507f191e810c19729de860ea',
   },
 ]
 
