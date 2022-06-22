@@ -24,25 +24,20 @@ describe('when some tasks are already created', () => {
 
   test('a particular task is returned', async () => {
     const response = await api.get('/api/tasks').expect(200)
-    expect(response.body.map((task) => task.title)).toContain('Do Laundry')
+    expect(response.body.map((task) => task.title)).toContain('Water Plants')
   })
 })
 
 describe('an already existing task', () => {
-  const task = new Task({
-    title: 'Water Plants',
-    description: 'check if the top layer is dry before watering',
-    completed: false,
-    _id: mongoose.Types.ObjectId('507f191e810c19729de860eb'),
-    list: mongoose.Types.ObjectId('507f191e810c19729de861ea'),
+  let task
+  beforeEach(async () => {
+    const tasksInDb = await helper.tasksInDb()
+    task = tasksInDb[0]
   })
 
-  beforeEach(async () => {
-    await task.save()
-  })
   test('can be searched using its id', async () => {
     const response = await api
-      .get(`/api/tasks/${task._id.toString()}`)
+      .get(`/api/tasks/${task.id}`)
       .expect('Content-Type', /json/)
       .expect(200)
 
@@ -50,9 +45,13 @@ describe('an already existing task', () => {
     expect(response.body.title).toBe(task.title)
   })
 
-  test.only('contains information about the list it belongs to', async () => {
+  test('contains information about the list it belongs to', async () => {
     const response = await api.get(`/api/tasks/${task._id.toString()}`)
+    const listOfTask = await List.findOne({
+      tasks: { $elemMatch: { $eq: task.list } },
+    })
 
-    expect(response.body.list.id).toBe(task.list)
+    expect(response.body.list.id).toBe(task.list.toString())
+    expect(response.body.list.name).toBe(listOfTask.name)
   })
 })

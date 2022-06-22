@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const Task = require('../models/task')
 
 const initialTasks = [
   {
@@ -14,8 +15,8 @@ const initialTasks = [
     list: new mongoose.Types.ObjectId('507f191e810c19729de860ea'),
   },
   {
-    title: 'Do Laundry',
-    description: 'remember to select pre-wash',
+    title: 'Water Plants',
+    description: 'check if the top layer is dry before watering',
     completed: false,
     list: new mongoose.Types.ObjectId('507f191e810c19729de861ea'),
   },
@@ -36,4 +37,8 @@ const initialLists = [
   },
 ]
 
-module.exports = { initialTasks, initialLists }
+const tasksInDb = async () => {
+  return await Task.find({})
+}
+
+module.exports = { initialTasks, initialLists, tasksInDb }
