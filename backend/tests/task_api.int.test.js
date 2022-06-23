@@ -26,16 +26,28 @@ describe('when some tasks are already created', () => {
     const response = await api.get('/api/tasks').expect(200)
     expect(response.body.map((task) => task.title)).toContain('Water Plants')
   })
+
+  test('tasks have a unique identifier id', async () => {})
+
+  test('tasks do not contain default fields _id and __v', () => {})
+
+  test('tasks contain name and id of the list they belong to', async () => {
+    const tasksInDb = await helper.tasksInDb()
+    const task = tasksInDb[0]
+
+    const response = await api.get(`/api/tasks/${task._id.toString()}`)
+    const list = await List.findOne({ tasks: task._id })
+
+    expect(response.body.list.id).toBe(task.list.toString())
+    expect(response.body.list.name).toBe(list.name)
+  })
 })
 
-describe('an already existing task', () => {
-  let task
-  beforeEach(async () => {
+describe('viewing a specific task', () => {
+  it('can be done using its id', async () => {
     const tasksInDb = await helper.tasksInDb()
-    task = tasksInDb[0]
-  })
+    const task = tasksInDb[0]
 
-  test('can be searched using its id', async () => {
     const response = await api
       .get(`/api/tasks/${task.id}`)
       .expect('Content-Type', /json/)
@@ -45,13 +57,26 @@ describe('an already existing task', () => {
     expect(response.body.title).toBe(task.title)
   })
 
-  test('contains information about the list it belongs to', async () => {
-    const response = await api.get(`/api/tasks/${task._id.toString()}`)
-    const listOfTask = await List.findOne({
-      tasks: { $elemMatch: { $eq: task.list } },
-    })
+  it('throws http error code 400 if id is in invalid format', async () => {
+    const response = await api.get('/api/tasks/invalidID').expect(400)
 
-    expect(response.body.list.id).toBe(task.list.toString())
-    expect(response.body.list.name).toBe(listOfTask.name)
+    expect(response.body.error).toBe('invalid id')
+  })
+
+  it('throws http error code 404 if task does not exist', async () => {
+    const response = await api
+      .get(`/api/tasks/${helper.nonExistentId()}`)
+      .expect(404)
+
+    expect(response.body.error).toBe('not found')
+  })
+})
+
+describe('deletion of a task', () => {
+  test.only('can be done successfully with code 204', async () => {
+    const tasksAtStart = await helper.tasksInDb()
+    const task = tasksAtStart[0]
+
+    await api.delete(`/api/list/${task.id}`).expect(204)
   })
 })

@@ -31,6 +31,7 @@ taskRouter
   .route('/:id')
   .get(async (req, res) => {
     const task = await Task.findById(req.params.id).populate('list', 'name')
+    if (task === null) return res.status(404).json({ error: 'not found' })
 
     res.status(200).json(task)
   })
