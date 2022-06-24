@@ -29,7 +29,11 @@ describe('when some tasks are already created', () => {
 
   test('tasks have a unique identifier id', async () => {})
 
-  test('tasks do not contain default fields _id and __v', () => {})
+  test('tasks do not contain default fields _id and __v', async () => {
+    const response = await api.get('/api/tasks/').expect(200)
+
+    const task = 
+  })
 
   test('tasks contain name and id of the list they belong to', async () => {
     const tasksInDb = await helper.tasksInDb()
@@ -73,10 +77,78 @@ describe('viewing a specific task', () => {
 })
 
 describe('deletion of a task', () => {
-  test.only('can be done successfully with code 204', async () => {
+  it('can be done successfully with code 204', async () => {
     const tasksAtStart = await helper.tasksInDb()
-    const task = tasksAtStart[0]
+    const taskToDelete = tasksAtStart[0]
 
-    await api.delete(`/api/list/${task.id}`).expect(204)
+    await api.delete(`/api/tasks/${taskToDelete.id}`).expect(204)
+
+    const tasksAtEnd = await helper.tasksInDb()
+    expect(tasksAtEnd.length).toBe(tasksAtStart.length - 1)
+
+    const titles = tasksAtEnd.map((task) => task.title)
+    expect(titles).not.toContain(taskToDelete.title)
+  })
+})
+
+describe('adding a new task', () => {
+  it('can be done succesfully', async () => {
+    const newTask = {
+      title: 'Write tests',
+      description: 'make sure app functions as intended',
+      completed: false,
+      listId: '507f191e810c19729de860ea',
+    }
+
+    const tasksAtStart = await helper.tasksInDb()
+
+    await api
+      .post('/api/tasks')
+      .set('Content-Type', 'application/json')
+      .send(newTask)
+      .expect(201)
+
+    const tasksAtEnd = await helper.tasksInDb()
+    expect(tasksAtEnd.length).toBe(tasksAtStart.length + 1)
+
+    const titles = tasksAtEnd.map((task) => task.title)
+    expect(titles).toContain(newTask.title)
+  })
+
+  test('without list id sets Inbox as default list', async () => {
+    const newTask = {
+      title: 'Write tests',
+      description: 'make sure app functions as intended',
+      completed: false,
+    }
+
+    const response = await api
+      .post('/api/tasks')
+      .set('Content-Type', 'application/json')
+      .send(newTask)
+      .expect(201)
+
+    const inboxList = await List.findOne({ name: 'Inbox' })
+
+    expect(response.body.list).toBeDefined()
+    expect(response.body.list.id).toBe(inboxList.id)
+    expect(response.body.list.name).toBe('Inbox')
+  })
+
+  test('without completed sets false as default value', async () => {
+    const newTask = {
+      title: 'Write tests',
+      description: 'make sure app functions as intended',
+      listId: '507f191e810c19729de860ea',
+    }
+
+    const response = await api
+      .post('/api/tasks')
+      .set('Content-Type', 'appication/json')
+      .send(newTask)
+      .expect(201)
+
+    expect(response.body.completed).toBeDefined()
+    expect(response.body.completed).toBe(false)
   })
 })
