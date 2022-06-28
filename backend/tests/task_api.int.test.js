@@ -27,23 +27,29 @@ describe('when some tasks are already created', () => {
     expect(response.body.map((task) => task.title)).toContain('Water Plants')
   })
 
-  test('tasks have a unique identifier id', async () => {})
+  test('tasks have a unique identifier id', async () => {
+    const response = await api.get('/api/tasks').expect(200)
+    const task = response.body[0]
+
+    expect(task.id).toBeDefined()
+  })
 
   test('tasks do not contain default fields _id and __v', async () => {
-    const response = await api.get('/api/tasks/').expect(200)
+    const response = await api.get('/api/tasks').expect(200)
 
-    const task = 
+    const task = response.body[0]
+
+    expect(task._id).toBeUndefined()
+    expect(task.__v).toBeUndefined()
   })
 
   test('tasks contain name and id of the list they belong to', async () => {
-    const tasksInDb = await helper.tasksInDb()
-    const task = tasksInDb[0]
+    const response = await api.get('/api/tasks').expect(200)
+    const task = response.body[0]
+    const list = await List.findOne({ tasks: task.id })
 
-    const response = await api.get(`/api/tasks/${task._id.toString()}`)
-    const list = await List.findOne({ tasks: task._id })
-
-    expect(response.body.list.id).toBe(task.list.toString())
-    expect(response.body.list.name).toBe(list.name)
+    expect(task.list.id).toBe(list.id.toString())
+    expect(task.list.name).toBe(list.name)
   })
 })
 
@@ -150,5 +156,32 @@ describe('adding a new task', () => {
 
     expect(response.body.completed).toBeDefined()
     expect(response.body.completed).toBe(false)
+  })
+})
+
+describe('updating a task', () => {
+  it.only('can be done successfully', async () => {
+    const tasksAtStart = await helper.tasksInDb()
+    const taskToBeUpdated = tasksAtStart[0]
+
+    await api
+      .put(`/api/tasks/${taskToBeUpdated.id}`)
+      .set('content-type', 'application/json')
+      .send({
+        title: 'changed title',
+        description: 'changed description',
+        completed: !taskToBeUpdated.completed,
+        listId: '507f191e810c19729de860ea',
+      })
+      .expect(201)
+
+    const tasksAtEnd = await helper.tasksInDb()
+    expect(tasksAtEnd).toContainEqual({
+      title: 'changed title',
+      description: 'changed description',
+      completed: true,
+      // dueBy: '2020-01-01',
+      list: '507f191e810c19729de860ea',
+    })
   })
 })
