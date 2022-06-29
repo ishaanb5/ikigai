@@ -40,7 +40,8 @@ const initialLists = [
 ]
 
 const tasksInDb = async () => {
-  return await Task.find({})
+  const tasks = await Task.find({})
+  return tasks.map((task) => task.toJSON())
 }
 
 const nonExistentId = () => {

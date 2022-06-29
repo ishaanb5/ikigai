@@ -4,6 +4,7 @@ const mongoose = require('mongoose')
 const Task = require('../models/task')
 const List = require('../models/list')
 const helper = require('./test_helper')
+const { update } = require('../models/list')
 
 const api = supertest(app)
 
@@ -48,7 +49,7 @@ describe('when some tasks are already created', () => {
     const task = response.body[0]
     const list = await List.findOne({ tasks: task.id })
 
-    expect(task.list.id).toBe(list.id.toString())
+    expect(task.list.id).toBe(list.id)
     expect(task.list.name).toBe(list.name)
   })
 })
@@ -63,7 +64,7 @@ describe('viewing a specific task', () => {
       .expect('Content-Type', /json/)
       .expect(200)
 
-    expect(response.body.id).toBe(task._id.toString())
+    expect(response.body.id).toBe(task.id)
     expect(response.body.title).toBe(task.title)
   })
 
@@ -160,28 +161,47 @@ describe('adding a new task', () => {
 })
 
 describe('updating a task', () => {
-  it.only('can be done successfully', async () => {
+  it('can be done successfully', async () => {
     const tasksAtStart = await helper.tasksInDb()
     const taskToBeUpdated = tasksAtStart[0]
 
-    await api
+    const response = await api
       .put(`/api/tasks/${taskToBeUpdated.id}`)
       .set('content-type', 'application/json')
       .send({
         title: 'changed title',
         description: 'changed description',
         completed: !taskToBeUpdated.completed,
+        dueBy: new Date(2022, 0, 1),
         listId: '507f191e810c19729de860ea',
       })
       .expect(201)
 
     const tasksAtEnd = await helper.tasksInDb()
-    expect(tasksAtEnd).toContainEqual({
-      title: 'changed title',
-      description: 'changed description',
-      completed: true,
-      // dueBy: '2020-01-01',
-      list: '507f191e810c19729de860ea',
-    })
+    const updatedTaskInDb = tasksAtEnd.find(
+      (task) => task.id === taskToBeUpdated.id,
+    )
+    // stringified and parsed as list id is of type ObjectId
+    const processedUpdatedTaskInDb = JSON.parse(JSON.stringify(updatedTaskInDb))
+
+    const titles = tasksAtEnd.map((task) => task.title)
+    const descriptions = tasksAtEnd.map((task) => task.description)
+
+    expect(titles).toContain('changed title')
+    expect(descriptions).toContain('changed description')
+    expect(response.body).toEqual(processedUpdatedTaskInDb)
+  })
+
+  test.only('with empty title will set the title as No Title', async () => {
+    const tasksAtStart = await helper.tasksInDb()
+    const taskToBeUpdated = tasksAtStart[0]
+
+    const response = await api
+      .put(`/api/tasks/${taskToBeUpdated.id}`)
+      .set('content-type', 'application/json')
+      .send({ title: '' })
+      .expect(201)
+
+    console.log(response)
   })
 })
