@@ -4,8 +4,6 @@ const List = require('./list')
 const taskSchema = mongoose.Schema({
   title: {
     type: String,
-    required: true,
-    default: 'No Title',
   },
   description: { type: String, default: '' },
   completed: {
