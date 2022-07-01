@@ -1,10 +1,8 @@
 const supertest = require('supertest')
 const app = require('../app')
-const mongoose = require('mongoose')
 const Task = require('../models/task')
 const List = require('../models/list')
 const helper = require('./test_helper')
-const { update } = require('../models/list')
 
 const api = supertest(app)
 
@@ -190,18 +188,5 @@ describe('updating a task', () => {
     expect(titles).toContain('changed title')
     expect(descriptions).toContain('changed description')
     expect(response.body).toEqual(processedUpdatedTaskInDb)
-  })
-
-  test.only('with empty title will set the title as No Title', async () => {
-    const tasksAtStart = await helper.tasksInDb()
-    const taskToBeUpdated = tasksAtStart[0]
-
-    const response = await api
-      .put(`/api/tasks/${taskToBeUpdated.id}`)
-      .set('content-type', 'application/json')
-      .send({ title: '' })
-      .expect(201)
-
-    console.log(response)
   })
 })
