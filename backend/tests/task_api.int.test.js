@@ -12,28 +12,28 @@ beforeEach(async () => {
 })
 
 describe('when some tasks are already created', () => {
-  test('tasks are returned in JSON format', async () => {
+  test('200- tasks are returned in JSON format', async () => {
     await api.get('/api/tasks').expect('Content-Type', /json/).expect(200)
   })
 
-  test('all tasks are returned', async () => {
+  test('200- all tasks are returned', async () => {
     const response = await api.get('/api/tasks').expect(200)
     expect(response.body.length).toBe(helper.initialTasks.length)
   })
 
-  test('a particular task is returned', async () => {
+  test('200 - a particular task is returned', async () => {
     const response = await api.get('/api/tasks').expect(200)
     expect(response.body.map((task) => task.title)).toContain('Water Plants')
   })
 
-  test('tasks have a unique identifier id', async () => {
+  test('200 - tasks have a unique identifier id', async () => {
     const response = await api.get('/api/tasks').expect(200)
     const task = response.body[0]
 
     expect(task.id).toBeDefined()
   })
 
-  test('tasks do not contain default fields _id and __v', async () => {
+  test('200 - tasks do not contain default fields _id and __v', async () => {
     const response = await api.get('/api/tasks').expect(200)
 
     const task = response.body[0]
@@ -42,7 +42,7 @@ describe('when some tasks are already created', () => {
     expect(task.__v).toBeUndefined()
   })
 
-  test('tasks contain name and id of the list they belong to', async () => {
+  test('200 - tasks contain name and id of the list they belong to', async () => {
     const response = await api.get('/api/tasks').expect(200)
     const task = response.body[0]
     const list = await List.findOne({ tasks: task.id })
@@ -53,7 +53,7 @@ describe('when some tasks are already created', () => {
 })
 
 describe('viewing a specific task', () => {
-  it('can be done using its id', async () => {
+  it('200 - can be done using its id', async () => {
     const tasksInDb = await helper.tasksInDb()
     const task = tasksInDb[0]
 
@@ -66,13 +66,13 @@ describe('viewing a specific task', () => {
     expect(response.body.title).toBe(task.title)
   })
 
-  it('throws http error code 400 if id is in invalid format', async () => {
+  it('400 - if id is in invalid format', async () => {
     const response = await api.get('/api/tasks/invalidID').expect(400)
 
     expect(response.body.error).toBe('invalid id')
   })
 
-  it('throws http error code 404 if task does not exist', async () => {
+  it('404 - if task does not exist', async () => {
     const response = await api
       .get(`/api/tasks/${helper.nonExistentId()}`)
       .expect(404)
@@ -82,7 +82,7 @@ describe('viewing a specific task', () => {
 })
 
 describe('deletion of a task', () => {
-  it('can be done successfully with code 204', async () => {
+  it('204 - can be done successfully', async () => {
     const tasksAtStart = await helper.tasksInDb()
     const taskToDelete = tasksAtStart[0]
 
@@ -94,10 +94,18 @@ describe('deletion of a task', () => {
     const titles = tasksAtEnd.map((task) => task.title)
     expect(titles).not.toContain(taskToDelete.title)
   })
+  it('400 - if the is invalid', async () => {
+    const response = await api
+      .delete('/api/tasks/invalidId')
+      .expect(400)
+    
+      expect(response.body.error).toBe('invalid id')
+    })
+
 })
 
 describe('adding a new task', () => {
-  it('can be done succesfully', async () => {
+  it('201 - can be done succesfully', async () => {
     const newTask = {
       title: 'Write tests',
       description: 'make sure app functions as intended',
@@ -120,7 +128,7 @@ describe('adding a new task', () => {
     expect(titles).toContain(newTask.title)
   })
 
-  test('without list id sets Inbox as default list', async () => {
+  test('201 - without list id sets Inbox as default list', async () => {
     const newTask = {
       title: 'Write tests',
       description: 'make sure app functions as intended',
@@ -140,7 +148,7 @@ describe('adding a new task', () => {
     expect(response.body.list.name).toBe('Inbox')
   })
 
-  test('without completed sets false as default value', async () => {
+  test('201 - without completed sets false as default value', async () => {
     const newTask = {
       title: 'Write tests',
       description: 'make sure app functions as intended',
@@ -158,8 +166,8 @@ describe('adding a new task', () => {
   })
 })
 
-describe('updating a task', () => {
-  it('can be done successfully', async () => {
+describe('updating a task using id', () => {
+  it('201 - can be done successfully', async () => {
     const tasksAtStart = await helper.tasksInDb()
     const taskToBeUpdated = tasksAtStart[0]
 
@@ -188,5 +196,12 @@ describe('updating a task', () => {
     expect(titles).toContain('changed title')
     expect(descriptions).toContain('changed description')
     expect(response.body).toEqual(processedUpdatedTaskInDb)
+  })
+
+  it('404 - if the id does not exist', async() => {
+    const response  = await api.put(`/api/tasks/${helper.nonExistentId}`).expect(404)
+
+    expect(response.body.error).toBe('not found')
+
   })
 })
