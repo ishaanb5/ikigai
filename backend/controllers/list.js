@@ -5,12 +5,14 @@ const Task = require('../models/task')
 listRouter
   .route('/')
   .get(async (req, res) => {
-    let lists = await List.find({})
+    let lists = await List.find({}).populate('tasks', 'completed')
     lists = lists.reduce((result, list) => {
+      const remainingTasks = list.tasks.filter(task => !task.completed)
       const updatedList = {
         name: list.name,
         id: list.id,
         totalTasks: list.tasks.length,
+        remainingTasks: remainingTasks.length,
       }
       result.push(updatedList)
       return result

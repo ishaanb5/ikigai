@@ -1,3 +1,4 @@
+const List = require('../models/list')
 const Task = require('../models/task')
 
 const initialTasks = [
@@ -11,9 +12,16 @@ const initialTasks = [
   {
     title: 'item 2',
     description: 'description about task 2',
-    completed: false,
+    completed: true,
     list: '507f191e810c19729de860ea',
     _id: '507f191e810c19729de860ec',
+  },
+  {
+    title: 'item 3',
+    description: 'description about item 3',
+    completed: false,
+    list: '507f191e810c19729de860ea',
+    _id: '507f191e810c19729de860ee',
   },
   {
     title: 'Water Plants',
@@ -27,7 +35,7 @@ const initialTasks = [
 const initialLists = [
   {
     name: 'Inbox',
-    tasks: ['507f191e810c19729de860eb', '507f191e810c19729de860ec'],
+    tasks: ['507f191e810c19729de860eb', '507f191e810c19729de860ec', '507f191e810c19729de860ee'],
     editable: false,
     _id: '507f191e810c19729de860ea',
   },
@@ -53,4 +61,10 @@ const nonExistentId = () => {
   return tempTask.id
 }
 
-module.exports = { initialTasks, initialLists, tasksInDb, nonExistentId }
+const listsInDb = async () => {
+  const lists = await List.find({})
+  return lists.map(list =>  list.toJSON())
+}
+
+
+module.exports = { initialTasks, initialLists, tasksInDb, nonExistentId, listsInDb }
