@@ -21,7 +21,7 @@ listRouter
     return res.status(200).json(lists)
   })
   .post(async (req, res) => {
-    const newList = new List({ name: req.body.name })
+    const newList = new List(req.body)
     await newList.save()
 
     return res.status(201).json(newList)
