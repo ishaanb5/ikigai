@@ -6,17 +6,27 @@ const unknownEndpoint = (req, res) => {
 
 const errorHandler = (err, req, res, next) => {
   logger.error(err)
+
   if (err.name === 'CastError') {
-    const isTempTask = new RegExp(/created to have an id of a task that does not exist in db/)
-    if(isTempTask.test(err.value))
-    return res.status(404).json({ error: 'not found' })
+    const taskDoesNotExist = new RegExp(
+      /created to have an id of a task that does not exist in db/
+    )
+    if (taskDoesNotExist.test(err.value))
+      return res.status(404).json({ error: 'not found' })
     else {
-      res.status(400).json({ error: 'invalid id' })
-      
+      return res.status(400).json({ error: 'invalid id' })
     }
-  } else {
-    res.status(400).json({ error: err.message })
   }
+
+  if (err.name === 'ValidationError') {
+    return res.status(400).json({ error: err.errors.name.message })
+  }
+
+  if (err.name === 'MongoServerError' && err.code === 11000) {
+    return res.status(400).json({ error: 'err.message' })
+  }
+
+  return res.status(400).json({ error: err.message })
 
   next()
 }
