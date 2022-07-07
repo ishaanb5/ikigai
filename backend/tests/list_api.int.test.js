@@ -50,6 +50,7 @@ describe('when already saved lists exist', () => {
 
 describe('creating a new list', () => {
   it('201 - can be done successfully', async () => {
+    const listsAtStart = await helper.listsInDb()
     const listToBeAdded = { name: 'shopping list' }
 
     await api
@@ -60,7 +61,9 @@ describe('creating a new list', () => {
 
     const lists = await helper.listsInDb()
     const listNames = lists.map((list) => list.name)
+    const listsAtEnd = await helper.listsInDb()
 
+    expect(listsAtEnd).toHaveLength(listsAtStart.length + 1)
     expect(listNames).toContain(listToBeAdded.name)
   })
 
@@ -117,14 +120,68 @@ describe('searching a list with id', () => {
     const listsInDb = await helper.listsInDb()
     const listToBeSearched = listsInDb[0]
 
-    const response = await api.post(`/api/lists/${listToBeSearched}`)
+    const response = await api.get(`/api/lists/${listToBeSearched.id}`)
+
+    const tasksIdsInResponse = response.body.tasks.map((task) => task.id)
+
+    //converted objectIds of tasks to strings
+    const processedListToBeSearched = JSON.parse(
+      JSON.stringify(listToBeSearched)
+    )
+
+    expect(tasksIdsInResponse).toEqual(processedListToBeSearched.tasks)
   })
-  it('400 - fails for invalid id', async () => {})
-  it('404 - fails non-existent id', () => {})
+  it('400 - fails for invalid id', async () => {
+    const response = await api.get('/api/lists/invalidId').expect(400)
+
+    expect(response.body.error).toBe('invalid id')
+  })
+
+  it('404 - fails non-existent id', async () => {
+    const response = await api
+      .get(`/api/lists/${helper.nonExistentId}`)
+      .expect(404)
+
+    expect(response.body.error).toBe('not found')
+  })
 })
 
 describe('updating a list', () => {
-  it('can be done successfully', () => {})
+  it('201 - can be done successfully', async () => {
+    const listsAtStart = await helper.listsInDb()
+    const listToBeUpdated = await List.findOne({ editable: true })
+
+    await api
+      .put(`/api/lists/${listToBeUpdated.id}`)
+      .set('content-type', 'application/json')
+      .send({
+        name: 'updated list name',
+      })
+      .expect(201)
+
+    const listsAtEnd = await helper.listsInDb()
+    const listNames = listsAtEnd.map((list) => list.name)
+
+    expect(listsAtEnd).toHaveLength(listsAtStart.length)
+    expect(listNames).toContain('updated list name')
+  })
+
+  test.only('405 - name of the list cannot be updated if editable property is false', async () => {
+    const listToBeUpdated = await List.findOne({ editable: false })
+
+    await api
+      .put(`/api/lists/${listToBeUpdated.id}`)
+      .set('content-type', 'application/json')
+      .send({ name: 'cannot be changed' })
+      .expect(201)
+
+    const listsInDb = await helper.listsInDb()
+    const listNames = listsInDb.map((list) => list.name)
+
+    console.log(listNames)
+
+    expect(listNames).not.toContain('cannot be changed')
+  })
   it('throws http error code 404 for non-existent id', () => {})
   it('throws http error code 400 for invalid id', () => {})
   it('the response does not contain list of tasks', () => {})

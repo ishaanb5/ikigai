@@ -35,14 +35,18 @@ const initialTasks = [
 const initialLists = [
   {
     name: 'Inbox',
-    tasks: ['507f191e810c19729de860eb', '507f191e810c19729de860ec', '507f191e810c19729de860ee'],
+    tasks: [
+      '507f191e810c19729de860eb',
+      '507f191e810c19729de860ec',
+      '507f191e810c19729de860ee',
+    ],
     editable: false,
     _id: '507f191e810c19729de860ea',
   },
   {
     name: 'Chores',
     tasks: ['507f191e810c19729de860ed'],
-    editable: false,
+    editable: true,
     _id: '507f191e810c19729de861ea',
   },
 ]
@@ -63,8 +67,13 @@ const nonExistentId = () => {
 
 const listsInDb = async () => {
   const lists = await List.find({})
-  return lists.map(list =>  list.toJSON())
+  return lists.map((list) => list.toJSON())
 }
 
-
-module.exports = { initialTasks, initialLists, tasksInDb, nonExistentId, listsInDb }
+module.exports = {
+  initialTasks,
+  initialLists,
+  tasksInDb,
+  nonExistentId,
+  listsInDb,
+}
