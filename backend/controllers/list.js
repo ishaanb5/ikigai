@@ -7,7 +7,7 @@ listRouter
   .get(async (req, res) => {
     let lists = await List.find({}).populate('tasks', 'completed')
     lists = lists.reduce((result, list) => {
-      const remainingTasks = list.tasks.filter(task => !task.completed)
+      const remainingTasks = list.tasks.filter((task) => !task.completed)
       const updatedList = {
         name: list.name,
         id: list.id,
@@ -43,7 +43,7 @@ listRouter
       {
         ...req.body,
       },
-      { new: true },
+      { new: true }
     ).select({ tasks: 0 })
 
     res.status(201).send(updatedList)
