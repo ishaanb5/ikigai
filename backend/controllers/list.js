@@ -46,6 +46,9 @@ listRouter
       { new: true }
     ).select({ tasks: 0 })
 
+    if (updatedList === null) {
+      return res.status(404).json({ error: 'not found' })
+    }
     res.status(201).send(updatedList)
   })
   .delete(async (req, res) => {
