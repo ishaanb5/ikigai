@@ -7,7 +7,7 @@ const listSchema = new mongoose.Schema({
       value: true,
       message: '{PATH} is required',
     },
-    immutable: (doc) => doc.editable,
+    immutable: (doc) => !doc._update.editable,
     unique: true,
   },
   tasks: [
@@ -20,6 +20,7 @@ const listSchema = new mongoose.Schema({
     type: Boolean,
     default: true,
     immutable: true,
+    required: true,
   },
 
   /*
@@ -49,12 +50,19 @@ listSchema.post('save', (error, doc, next) => {
   } else next()
 })
 
-listSchema.post('update', (error, doc, next) => {
+listSchema.post('findOneAndUpdate', (error, doc, next) => {
   if (error.name === 'MongoServerError' && error.code === 11000) {
-    next(new Error('list name should be unique'))
+    next(new Error('list name already exists'))
   } else next()
 })
 
-const List = mongoose.model('List', listSchema)
+listSchema.post('validate', function () {
+  if (this.editable === false) {
+    {
+      listSchema.path('name').immutable(true)
+    }
+  }
+})
 
+const List = mongoose.model('List', listSchema)
 module.exports = List

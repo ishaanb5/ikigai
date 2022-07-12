@@ -13,6 +13,7 @@ listRouter
         id: list.id,
         totalTasks: list.tasks.length,
         remainingTasks: remainingTasks.length,
+        editable: list.editable,
       }
       result.push(updatedList)
       return result
@@ -38,13 +39,17 @@ listRouter
     return res.status(200).json(list)
   })
   .put(async (req, res) => {
-    const updatedList = await List.findByIdAndUpdate(
-      req.params.id,
-      {
-        ...req.body,
-      },
-      { new: true }
-    ).select({ tasks: 0 })
+    const listToBeUpdated = await List.findById(req.params.id)
+
+    // including editable in the update for setting name as immutable in case editable is false
+    const update = {
+      ...req.body,
+      editable: listToBeUpdated.editable,
+    }
+
+    const updatedList = await List.findByIdAndUpdate(req.params.id, update, {
+      new: true,
+    }).select({ tasks: 0 })
 
     if (updatedList === null) {
       return res.status(404).json({ error: 'not found' })
@@ -52,10 +57,15 @@ listRouter
     res.status(201).send(updatedList)
   })
   .delete(async (req, res) => {
+    const listToBeDeleted = await List.findById(req.params.id)
+    if (!listToBeDeleted.editable) {
+      return res.status(405).json({ error: 'delete not allowed' })
+    }
+
     await Task.deleteMany({ list: req.params.id })
     await List.findByIdAndDelete(req.params.id)
 
-    res.status(204).end()
+    res.status(204).end({})
   })
 
 module.exports = listRouter
