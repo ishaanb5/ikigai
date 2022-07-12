@@ -9,7 +9,7 @@ const errorHandler = (err, req, res, next) => {
 
   if (err.name === 'CastError') {
     const taskDoesNotExist = new RegExp(
-      /created to have an id of a task that does not exist in db/
+      /created to have an id of a task that does not exist in db/,
     )
     if (taskDoesNotExist.test(err.value))
       return res.status(404).json({ error: 'not found' })
@@ -23,7 +23,7 @@ const errorHandler = (err, req, res, next) => {
   }
 
   if (err.name === 'MongoServerError' && err.code === 11000) {
-    return res.status(400).json({ error: 'err.message' })
+    return res.status(400).json({ error: err.message })
   }
 
   return res.status(400).json({ error: err.message })
