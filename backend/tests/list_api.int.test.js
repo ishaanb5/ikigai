@@ -126,7 +126,7 @@ describe('searching a list with id', () => {
 
     //converted objectIds of tasks to strings
     const processedListToBeSearched = JSON.parse(
-      JSON.stringify(listToBeSearched)
+      JSON.stringify(listToBeSearched),
     )
 
     expect(tasksIdsInResponse).toEqual(processedListToBeSearched.tasks)
@@ -146,7 +146,7 @@ describe('searching a list with id', () => {
   })
 })
 
-describe.only('updating a list', () => {
+describe('updating a list', () => {
   it('201 - can be done successfully', async () => {
     const listsAtStart = await helper.listsInDb()
     const listToBeUpdated = await List.findOne({ editable: true })
@@ -166,8 +166,7 @@ describe.only('updating a list', () => {
     expect(listNames).toContain('updated list name')
   })
 
-  //not working
-  test('405 - name of the list cannot be updated if editable property is false', async () => {
+  test('201 - name of the list cannot be updated if editable property is false', async () => {
     const listToBeUpdated = await List.findOne({ editable: false })
 
     const response = await api
@@ -176,7 +175,6 @@ describe.only('updating a list', () => {
       .send({ name: 'cannot be changed' })
       .expect(201)
 
-    console.log(response.body)
     const listsInDb = await helper.listsInDb()
     const listNames = listsInDb.map((list) => list.name)
 
@@ -207,25 +205,71 @@ describe.only('updating a list', () => {
       .send({ name: 'updated name' })
       .expect(201)
 
-    console.log(response.body)
     expect(response.body.tasks).toBeUndefined()
   })
-  it.only('201 - fails if the list name already exists', async () => {
+
+  it('201 - fails if the list name already exists', async () => {
     const listsInDb = await helper.listsInDb()
     const listToBeUpdated = listsInDb[0]
 
-    // check if 400 is the correct status code
     const response = await api
       .put(`/api/lists/${listToBeUpdated.id}`)
       .set('content-type', 'application/json')
       .send({ name: 'Chores' })
       .expect(400)
 
-    expect(response.body.error).toBe()
+    expect(response.body.error).toBe('list name already exists')
   })
 })
 
 describe('deleting a list with id', () => {
-  it('can be done successfully', () => {})
-  it('throws http error code 400 for invalid id', () => {})
+  it('can be done successfully', async () => {
+    const listsAtStart = await helper.listsInDb()
+    const listToBeDeleted = listsAtStart[0]
+
+    const response = await api
+      .delete(`/api/lists/${listToBeDeleted.id}`)
+      .expect(204)
+
+    const listsAtEnd = await helper.listsInDb()
+    const listNames = listsAtEnd.map((list) => list.name)
+
+    expect(listsAtEnd).toHaveLength(listsAtStart.length - 1)
+    expect(listNames).not.toContain(listsAtStart.name)
+  })
+
+  it('400 - fails for invalid id', async () => {
+    const response = await api.delete('/api/lists/invalidId').expect(400)
+
+    expect(response.body.error).toBe('invalid id')
+  })
+
+  it('404 -  fails for non-existent lists', async () => {
+    const response = await api
+      .delete(`/api/lists/${helper.nonExistentId()}`)
+      .expect(404)
+
+    expect(response.body.error).toBe('list not found')
+  })
+
+  it('405 -  fails for lists that are not editable', async () => {
+    const listToBeDeleted = await List.findOne({ editable: false })
+
+    const response = await api
+      .delete(`/api/lists/${listToBeDeleted._id.toString()}`)
+      .expect(405)
+
+    expect(response.body.error).toBe('delete not allowed')
+  })
+
+  it('deletes all tasks that present in that list', async () => {
+    const listsAtStart = await helper.listsInDb()
+    const listToBeDeleted = listsAtStart[1]
+    const tasksInList = listToBeDeleted.tasks
+
+    await api.delete(`/api/lists/${listToBeDeleted.id}`).expect(204)
+
+    const tasksAtEnd = await helper.tasksInDb()
+    expect(tasksAtEnd).toEqual(expect.not.arrayContaining(tasksInList))
+  })
 })

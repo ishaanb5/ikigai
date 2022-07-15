@@ -58,6 +58,10 @@ listRouter
   })
   .delete(async (req, res) => {
     const listToBeDeleted = await List.findById(req.params.id)
+    if (listToBeDeleted === null) {
+      return res.status(404).json({ error: 'list not found' })
+    }
+
     if (!listToBeDeleted.editable) {
       return res.status(405).json({ error: 'delete not allowed' })
     }
@@ -65,7 +69,7 @@ listRouter
     await Task.deleteMany({ list: req.params.id })
     await List.findByIdAndDelete(req.params.id)
 
-    res.status(204).end({})
+    res.status(204).end()
   })
 
 module.exports = listRouter
