@@ -20,6 +20,10 @@ taskRouter
     await task.save()
 
     const list = await List.findById(task.list)
+    if (list === null) {
+      return res.status(404).json({ error: 'list does not exist' })
+    }
+
     list.tasks.push(task._id)
     await list.save()
 

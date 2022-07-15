@@ -95,13 +95,10 @@ describe('deletion of a task', () => {
     expect(titles).not.toContain(taskToDelete.title)
   })
   it('400 - if the is invalid', async () => {
-    const response = await api
-      .delete('/api/tasks/invalidId')
-      .expect(400)
-    
-      expect(response.body.error).toBe('invalid id')
-    })
+    const response = await api.delete('/api/tasks/invalidId').expect(400)
 
+    expect(response.body.error).toBe('invalid id')
+  })
 })
 
 describe('adding a new task', () => {
@@ -164,6 +161,22 @@ describe('adding a new task', () => {
     expect(response.body.completed).toBeDefined()
     expect(response.body.completed).toBe(false)
   })
+
+  test('404 - fails when list task is being saved to does not exist', async () => {
+    const newTask = {
+      title: 'Write tests',
+      description: 'make sure app functions as intended',
+      listId: await helper.nonExistentId(),
+    }
+
+    const response = await api
+      .post('/api/tasks/')
+      .set('content-type', 'application/json')
+      .send(newTask)
+      .expect(404)
+
+    expect(response.body.error).toBe('list does not exist')
+  })
 })
 
 describe('updating a task using id', () => {
@@ -198,10 +211,11 @@ describe('updating a task using id', () => {
     expect(response.body).toEqual(processedUpdatedTaskInDb)
   })
 
-  it('404 - if the id does not exist', async() => {
-    const response  = await api.put(`/api/tasks/${helper.nonExistentId}`).expect(404)
+  it('404 - if the id does not exist', async () => {
+    const response = await api
+      .put(`/api/tasks/${helper.nonExistentId}`)
+      .expect(404)
 
     expect(response.body.error).toBe('not found')
-
   })
 })
