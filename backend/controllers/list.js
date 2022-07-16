@@ -40,6 +40,9 @@ listRouter
   })
   .put(async (req, res) => {
     const listToBeUpdated = await List.findById(req.params.id)
+    if (listToBeUpdated === null) {
+      return res.status(404).json({ error: 'not found' })
+    }
 
     // including editable in the update for setting name as immutable in case editable is false
     const update = {
@@ -47,13 +50,15 @@ listRouter
       editable: listToBeUpdated.editable,
     }
 
-    const updatedList = await List.findByIdAndUpdate(req.params.id, update, {
-      new: true,
-    }).select({ tasks: 0 })
+    const updatedList = await List.findOneAndUpdate(
+      { _id: listToBeUpdated.id },
+      update,
+      {
+        new: true,
+        runValidators: true,
+      },
+    ).select({ tasks: 0 })
 
-    if (updatedList === null) {
-      return res.status(404).json({ error: 'not found' })
-    }
     res.status(201).send(updatedList)
   })
   .delete(async (req, res) => {

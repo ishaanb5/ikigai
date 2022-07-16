@@ -210,12 +210,12 @@ describe('updating a list', () => {
 
   it('201 - fails if the list name already exists', async () => {
     const listsInDb = await helper.listsInDb()
-    const listToBeUpdated = listsInDb[0]
+    const listToBeUpdated = listsInDb[1]
 
     const response = await api
       .put(`/api/lists/${listToBeUpdated.id}`)
       .set('content-type', 'application/json')
-      .send({ name: 'Chores' })
+      .send({ name: 'Inbox' })
       .expect(400)
 
     expect(response.body.error).toBe('list name already exists')
@@ -225,7 +225,7 @@ describe('updating a list', () => {
 describe('deleting a list with id', () => {
   it('can be done successfully', async () => {
     const listsAtStart = await helper.listsInDb()
-    const listToBeDeleted = listsAtStart[0]
+    const listToBeDeleted = await List.findOne({ editable: true })
 
     const response = await api
       .delete(`/api/lists/${listToBeDeleted.id}`)
