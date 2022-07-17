@@ -1,16 +1,16 @@
 import { useState } from 'react'
-import TasksList from './TasksList'
-import Lists from './Lists'
+import TaskList from './TaskList'
+import CategoryList from './CategoryList'
 
 import './index.css'
 
 const App = () => {
   const [currentList, setCurrentList] = useState('All Tasks')
   return (
-    <>
-      <Lists setCurrentList={setCurrentList} />
-      <TasksList listName={currentList} />
-    </>
+    <div className="homepage__container">
+      <CategoryList setCurrentList={setCurrentList} />
+      <TaskList listName={currentList} />
+    </div>
   )
 }
 

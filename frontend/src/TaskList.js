@@ -2,8 +2,9 @@ import { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import Task from './Task'
 import taskService from './services/tasks'
+import List from './List'
 
-const Tasks = ({ listName }) => {
+const TaskList = ({ listName }) => {
   const [tasks, setTasks] = useState([])
   const [newTask, setNewTask] = useState({ title: '', description: '' })
 
@@ -54,6 +55,19 @@ const Tasks = ({ listName }) => {
     setTasks(updatedTasks)
   }
 
+  const createListItem = (task) => (
+    <Task
+      id={task.id}
+      title={task.title}
+      description={task.description}
+      completed={task.completed}
+      handleCompletion={handleTaskCompletion}
+      handleDelete={handleDeleteTask}
+      handleUpdate={handleUpdateTask}
+      dueBy={task.dueBy}
+    />
+  )
+
   return (
     <div className="tasklist">
       <h1 className="tasklist__list-name">{listName}</h1>
@@ -69,30 +83,20 @@ const Tasks = ({ listName }) => {
             onKeyDown={handleAddTask}
             onChange={(e) => setNewTask({ title: e.target.value })}
           />
-          <ul className="tasklist__list">
-            {tasks.map((task) => (
-              <li key={task.id} className="task">
-                <Task
-                  id={task.id}
-                  title={task.title}
-                  description={task.description}
-                  completed={task.completed}
-                  handleCompletion={handleTaskCompletion}
-                  handleDelete={handleDeleteTask}
-                  handleUpdate={handleUpdateTask}
-                  dueBy={task.dueBy}
-                />
-              </li>
-            ))}
-          </ul>
+          <List
+            type={tasks}
+            itemKey="id"
+            className="list"
+            createListItem={createListItem}
+          />
         </div>
       )}
     </div>
   )
 }
 
-Tasks.propTypes = {
+TaskList.propTypes = {
   listName: PropTypes.string.isRequired,
 }
 
-export default Tasks
+export default TaskList
