@@ -8,6 +8,11 @@ body {
 
 /* ========== List ========== */
 
+.homepage__container {
+  display: grid;
+  grid-template-columns: 1fr 3fr 7fr 7fr;
+}
+
 .list {
   padding: 20px;
   border: solid rgba(121, 121, 121, 0.25);
@@ -21,6 +26,9 @@ body {
 }
 
 /* ========== Tasklist ========== */
+.tasklist {
+  grid-column: 3;
+}
 
 .tasklist__list-name {
   margin: 0 10px 5px;
@@ -29,15 +37,14 @@ body {
 }
 
 .tasklist__new-task-input {
-  box-sizing: border-box;
-  width: 100%;
+  /* width: 100%;
   padding: 10px;
   border-radius: 5px;
   border: none;
   margin-top: 10px;
   font-size: 0.9em;
   background-color: #252222;
-  color: #e4d9d9;
+  color: #e4d9d9; */
 }
 
 /* ========== Task ========== */
@@ -45,4 +52,9 @@ body {
 .task {
   border-bottom: solid rgba(121, 121, 121, 0.25) 1px;
   width: 100%;
+}
+
+/* ========== Task ========== */
+.category-list {
+  grid-column: 2;
 }

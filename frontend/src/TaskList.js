@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
+import InputBase from '@mui/material/InputBase'
 import Task from './Task'
 import taskService from './services/tasks'
 import List from './List'
@@ -69,13 +70,13 @@ const TaskList = ({ listName }) => {
   )
 
   return (
-    <div className="tasklist">
+    <section className="tasklist">
       <h1 className="tasklist__list-name">{listName}</h1>
       {tasks.length === 0 ? (
         <p>No pending tasks!</p>
       ) : (
         <div>
-          <input
+          <InputBase
             className="tasklist__new-task-input"
             type="text"
             value={newTask.title}
@@ -91,7 +92,7 @@ const TaskList = ({ listName }) => {
           />
         </div>
       )}
-    </div>
+    </section>
   )
 }
 

@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import PropTypes from 'prop-types'
+import DeleteIcon from '@mui/icons-material/Delete'
 
 const Task = ({
   id,
@@ -70,7 +71,7 @@ const Task = ({
           handleDelete(id)
         }}
       >
-        <img src="/images/icons/dark/delete.png" alt="icon to delete tasks" />
+        <DeleteIcon fill="red" />
       </button>
     </>
   )

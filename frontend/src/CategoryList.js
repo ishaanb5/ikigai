@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
+import AddIcon from '@mui/icons-material/Add'
 import listService from './services/lists'
 import List from './List'
 
-const Lists = ({ setCurrentList }) => {
+const CategoryList = ({ setCurrentList }) => {
   const [lists, setLists] = useState([])
 
   useEffect(() => {
@@ -19,15 +20,16 @@ const Lists = ({ setCurrentList }) => {
   )
 
   return (
-    <div>
+    <section className="category-list">
       <h2>Lists</h2>
+      <AddIcon />
       <List type={lists} listKey="id" createListItem={createListItem} />
-    </div>
+    </section>
   )
 }
 
-Lists.propTypes = {
+CategoryList.propTypes = {
   setCurrentList: PropTypes.func.isRequired,
 }
 
-export default Lists
+export default CategoryList
