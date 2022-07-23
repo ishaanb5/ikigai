@@ -1,22 +1,31 @@
 import { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import InputBase from '@mui/material/InputBase'
-import Task from './Task'
 import taskService from './services/tasks'
+import listService from './services/lists'
+import Task from './Task'
 import List from './List'
 
-const TaskList = ({ listName }) => {
+const TaskList = ({ currentList, updateCurrentList }) => {
+  const [newTask, setNewTask] = useState({
+    title: '',
+    description: '',
+  })
   const [tasks, setTasks] = useState([])
-  const [newTask, setNewTask] = useState({ title: '', description: '' })
 
   useEffect(() => {
     const getTasks = async () => {
-      const intialTasks = await taskService.getAll()
-      setTasks(intialTasks)
+      if (currentList.name === 'Inbox') {
+        const intialTasks = await taskService.getAll()
+        setTasks(intialTasks)
+      } else {
+        const list = await listService.getListById(currentList.id)
+        setTasks(list.tasks)
+      }
     }
 
     getTasks()
-  }, [])
+  }, [currentList.name, currentList.id])
 
   const handleTaskCompletion = (id) => {
     const task = tasks.find((t) => t.id === id)
@@ -37,6 +46,17 @@ const TaskList = ({ listName }) => {
 
       setTasks(tasks.concat(savedTask))
       setNewTask({ title: '', description: '' })
+      updateCurrentList({
+        ...currentList,
+        remainingTasks: currentList.remainingTasks + 1,
+        totalTasks: currentList.totalTasks + 1,
+      })
+
+      console.log('updated current list after adding task', {
+        ...currentList,
+        remainingTasks: currentList.remainingTasks + 1,
+        totalTasks: currentList.totalTasks + 1,
+      })
     }
   }
 
@@ -71,33 +91,51 @@ const TaskList = ({ listName }) => {
 
   return (
     <section className="tasklist">
-      <h1 className="tasklist__list-name">{listName}</h1>
+      {console.log('tasklist was rendered')}
+      <h1 className="tasklist__list-name">{currentList.name}</h1>
+      <InputBase
+        className="tasklist__new-task-input"
+        type="text"
+        value={newTask.title}
+        placeholder=" + Add a new task, press Enter to save."
+        onKeyDown={handleAddTask}
+        onChange={(e) =>
+          setNewTask((prevState) => ({
+            ...prevState,
+            title: e.target.value,
+            listId: currentList.id,
+          }))
+        }
+      />
       {tasks.length === 0 ? (
         <p>No pending tasks!</p>
       ) : (
-        <div>
-          <InputBase
-            className="tasklist__new-task-input"
-            type="text"
-            value={newTask.title}
-            placeholder=" + Add a new task, press Enter to save."
-            onKeyDown={handleAddTask}
-            onChange={(e) => setNewTask({ title: e.target.value })}
-          />
-          <List
-            type={tasks}
-            itemKey="id"
-            className="list"
-            createListItem={createListItem}
-          />
-        </div>
+        <List
+          type={tasks}
+          itemKey="id"
+          className="list"
+          createListItem={createListItem}
+        />
       )}
     </section>
   )
 }
 
 TaskList.propTypes = {
-  listName: PropTypes.string.isRequired,
+  currentList: PropTypes.objectOf({
+    name: PropTypes.string,
+    tasks: PropTypes.arrayOf(
+      PropTypes.objectOf({
+        title: PropTypes.string,
+        description: PropTypes.string,
+        completed: PropTypes.bool,
+        dueBy: PropTypes.instanceOf(Date),
+        list: PropTypes.string,
+      }),
+    ),
+    editable: PropTypes.bool,
+  }).isRequired,
+  updateCurrentList: PropTypes.func.isRequired,
 }
 
 export default TaskList

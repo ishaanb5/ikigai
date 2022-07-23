@@ -1,30 +1,25 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import CssBaseline from '@mui/material/CssBaseline'
 import TaskList from './TaskList'
 import CategoryList from './CategoryList'
-import taskService from './services/tasks'
 
 import './index.css'
 
 const App = () => {
-  const [currentList, setCurrentList] = useState('Inbox')
-  const [tasks, setTasks] = useState([])
-
-  useEffect(() => {
-    const getTasks = async () => {
-      const intialTasks = await taskService.getAll()
-      setTasks(intialTasks)
-    }
-
-    getTasks()
-  }, [currentList])
+  const [currentList, setCurrentList] = useState({ name: 'Inbox' })
 
   return (
     <>
       <CssBaseline enableColorScheme />
       <div className="homepage__container">
-        <CategoryList setCurrentList={setCurrentList} />
-        <TaskList listName={currentList} tasks={tasks} updateTasks={setTasks} />
+        <CategoryList
+          currentList={currentList}
+          setCurrentList={setCurrentList}
+        />
+        <TaskList
+          currentList={currentList}
+          updateCurrentList={setCurrentList}
+        />
       </div>
     </>
   )

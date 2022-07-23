@@ -2,6 +2,7 @@ import PropTypes from 'prop-types'
 
 const List = ({ type, createListItem, itemKey }) => (
   <ul>
+    {console.log('list component was rendered')}
     {type.map((item) => (
       <li key={item[itemKey]} className="list__list-item">
         {createListItem(item)}
