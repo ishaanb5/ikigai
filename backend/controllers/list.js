@@ -33,6 +33,11 @@ listRouter
   .get(async (req, res) => {
     const list = await List.findById(req.params.id).populate('tasks')
 
+    const populatedTasks = await Promise.all(
+      list.tasks.map((task) => task.populate('list', 'name')),
+    )
+    list.tasks = populatedTasks
+
     if (list === null) {
       return res.status(404).end()
     }
