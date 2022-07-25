@@ -6,12 +6,11 @@ import List from './List'
 
 const CategoryList = ({ currentList, setCurrentList }) => {
   const [lists, setLists] = useState([])
-  console.log('category list was rendered', currentList)
   useEffect(() => {
     listService.getAll().then((allLists) => {
       setLists(allLists)
     })
-  }, [])
+  }, [currentList])
 
   const createListItem = (list) => (
     <button type="button" onClick={() => setCurrentList(list)}>
@@ -23,26 +22,21 @@ const CategoryList = ({ currentList, setCurrentList }) => {
     <section className="category-list">
       <h2>Lists</h2>
       <AddIcon />
-      <List type={lists} listKey="id" createListItem={createListItem} />
+      <List type={lists} itemKey="id" createListItem={createListItem} />
     </section>
   )
 }
 
 CategoryList.propTypes = {
-  currentList: PropTypes.objectOf({
-    name: PropTypes.string,
-    tasks: PropTypes.arrayOf(
-      PropTypes.objectOf({
-        title: PropTypes.string,
-        description: PropTypes.string,
-        completed: PropTypes.bool,
-        dueBy: PropTypes.instanceOf(Date),
-        list: PropTypes.string,
-      }),
-    ),
-    editable: PropTypes.bool,
-  }).isRequired,
+  currentList: PropTypes.exact({
+    remainingTasks: PropTypes.number,
+    totalTasks: PropTypes.number,
+  }),
   setCurrentList: PropTypes.func.isRequired,
+}
+
+CategoryList.defaultProps = {
+  currentList: {},
 }
 
 export default CategoryList

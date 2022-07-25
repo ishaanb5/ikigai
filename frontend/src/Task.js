@@ -66,9 +66,8 @@ const Task = ({
       )}
       <button
         type="button"
-        onClick={(e) => {
-          e.preventDefault()
-          handleDelete(id)
+        onClick={() => {
+          handleDelete(id, completed)
         }}
       >
         <DeleteIcon fill="red" />
