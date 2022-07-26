@@ -1,5 +1,5 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
 const { MongoMemoryServer } = require('mongodb-memory-server')
-const mongoose = require('mongoose')
 
 const globalSetup = async () => {
   const mongod = await MongoMemoryServer.create()

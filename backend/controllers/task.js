@@ -28,7 +28,7 @@ taskRouter
     await list.save()
 
     task = await task.populate('list', 'name')
-    res.status(201).json(task)
+    return res.status(201).json(task)
   })
 
 taskRouter
@@ -37,7 +37,7 @@ taskRouter
     const task = await Task.findById(req.params.id).populate('list', 'name')
     if (task === null) return res.status(404).json({ error: 'not found' })
 
-    res.status(200).json(task)
+    return res.status(200).json(task)
   })
   .put(async (req, res) => {
     const updatedTask = await Task.findByIdAndUpdate(req.params.id, req.body, {

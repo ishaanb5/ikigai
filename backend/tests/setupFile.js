@@ -1,12 +1,12 @@
 const mongoose = require('mongoose')
 
 beforeEach(async () => {
-  const collections = mongoose.connection.collections
+  const { collections } = mongoose.connection
 
-  for (const key in collections) {
+  Object.keys(collections).forEach(async (key) => {
     const collection = collections[key]
     await collection.deleteMany()
-  }
+  })
 })
 
 beforeAll(async () => {

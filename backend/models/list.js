@@ -56,11 +56,9 @@ listSchema.post('findOneAndUpdate', (error, doc, next) => {
   } else next()
 })
 
-listSchema.post('validate', function () {
+listSchema.post('validate', function setListNameImmutable() {
   if (this.editable === false) {
-    {
-      listSchema.path('name').immutable(true)
-    }
+    listSchema.path('name').immutable(true)
   }
 })
 

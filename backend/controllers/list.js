@@ -64,7 +64,7 @@ listRouter
       },
     ).select({ tasks: 0 })
 
-    res.status(201).send(updatedList)
+    return res.status(201).send(updatedList)
   })
   .delete(async (req, res) => {
     const listToBeDeleted = await List.findById(req.params.id)
@@ -79,7 +79,7 @@ listRouter
     await Task.deleteMany({ list: req.params.id })
     await List.findByIdAndDelete(req.params.id)
 
-    res.status(204).end()
+    return res.status(204).end()
   })
 
 module.exports = listRouter

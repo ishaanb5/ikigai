@@ -124,7 +124,7 @@ describe('searching a list with id', () => {
 
     const tasksIdsInResponse = response.body.tasks.map((task) => task.id)
 
-    //converted objectIds of tasks to strings
+    // converted objectIds of tasks to strings
     const processedListToBeSearched = JSON.parse(
       JSON.stringify(listToBeSearched),
     )
@@ -169,7 +169,7 @@ describe('updating a list', () => {
   test('201 - name of the list cannot be updated if editable property is false', async () => {
     const listToBeUpdated = await List.findOne({ editable: false })
 
-    const response = await api
+    await api
       .put(`/api/lists/${listToBeUpdated.id}`)
       .set('content-type', 'application/json')
       .send({ name: 'cannot be changed' })
@@ -227,9 +227,7 @@ describe('deleting a list with id', () => {
     const listsAtStart = await helper.listsInDb()
     const listToBeDeleted = await List.findOne({ editable: true })
 
-    const response = await api
-      .delete(`/api/lists/${listToBeDeleted.id}`)
-      .expect(204)
+    await api.delete(`/api/lists/${listToBeDeleted.id}`).expect(204)
 
     const listsAtEnd = await helper.listsInDb()
     const listNames = listsAtEnd.map((list) => list.name)

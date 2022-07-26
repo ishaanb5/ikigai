@@ -4,18 +4,17 @@ const unknownEndpoint = (req, res) => {
   res.status(404).json({ error: 'unknown endpoint' })
 }
 
+// eslint-disable-next-line consistent-return
 const errorHandler = (err, req, res, next) => {
   logger.error(err)
 
   if (err.name === 'CastError') {
-    const taskDoesNotExist = new RegExp(
-      /created to have an id of a task that does not exist in db/,
-    )
-    if (taskDoesNotExist.test(err.value))
+    const taskDoesNotExist =
+      /created to have an id of a task that does not exist in db/
+    if (taskDoesNotExist.test(err.value)) {
       return res.status(404).json({ error: 'not found' })
-    else {
-      return res.status(400).json({ error: 'invalid id' })
     }
+    return res.status(400).json({ error: 'invalid id' })
   }
 
   if (err.name === 'ValidationError') {
@@ -26,9 +25,9 @@ const errorHandler = (err, req, res, next) => {
     return res.status(400).json({ error: err.message })
   }
 
-  return res.status(400).json({ error: err.message })
+  res.status(400).json({ error: err.message })
 
-  next()
+  next(err)
 }
 
 module.exports = { logger, unknownEndpoint, errorHandler }

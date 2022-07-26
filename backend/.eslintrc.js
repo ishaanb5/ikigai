@@ -3,6 +3,7 @@ module.exports = {
     commonjs: true,
     es2021: true,
     node: true,
+    'jest/globals': true,
   },
   extends: 'eslint:recommended',
   parserOptions: {
@@ -15,7 +16,7 @@ module.exports = {
     semi: ['error', 'never'],
     'import/no-extraneous-dependencies': [
       'error',
-      { devDependencies: '**/*.test.js' },
+      { devDependencies: ['**/*.test.js'] },
     ],
   },
 }
