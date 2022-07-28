@@ -58,3 +58,9 @@ body {
 .category-list {
   grid-column: 2;
 }
+
+.category-list__title {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}

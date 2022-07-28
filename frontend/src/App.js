@@ -86,7 +86,6 @@ const App = () => {
 
   return (
     <>
-      {console.log('currentList', currentList)}
       <CssBaseline enableColorScheme />
       <div className="homepage__container">
         <CategoryList

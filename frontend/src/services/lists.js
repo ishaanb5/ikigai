@@ -11,4 +11,10 @@ const getListById = async (listId) => {
   return request.data
 }
 
-export default { getAll, getListById }
+const create = async (newList) => {
+  const response = await axios.post(baseUrl, newList)
+
+  return response.data
+}
+
+export default { getAll, getListById, create }

@@ -1,16 +1,22 @@
 import { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
-import AddIcon from '@mui/icons-material/Add'
 import listService from './services/lists'
 import List from './List'
+import NewCategoryListModal from './NewCategoryListModal'
 
 const CategoryList = ({ currentList, setCurrentList }) => {
   const [lists, setLists] = useState([])
+  const [newList, setNewList] = useState({ name: '' })
   useEffect(() => {
     listService.getAll().then((allLists) => {
       setLists(allLists)
     })
-  }, [currentList])
+  }, [currentList, newList])
+
+  const saveNewList = (list) => {
+    setNewList(list)
+    listService.create(newList)
+  }
 
   const createListItem = (list) => (
     <button type="button" onClick={() => setCurrentList(list)}>
@@ -20,8 +26,10 @@ const CategoryList = ({ currentList, setCurrentList }) => {
 
   return (
     <section className="category-list">
-      <h2>Lists</h2>
-      <AddIcon />
+      <div className="category-list__title">
+        <h2>Lists</h2>
+        <NewCategoryListModal saveNewList={saveNewList} />
+      </div>
       <List type={lists} itemKey="id" createListItem={createListItem} />
     </section>
   )
