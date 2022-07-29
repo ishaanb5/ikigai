@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react'
 import CssBaseline from '@mui/material/CssBaseline'
+import { ThemeProvider } from '@mui/material'
 import taskService from './services/tasks'
 import listService from './services/lists'
 import TaskList from './TaskList'
 import CategoryList from './CategoryList'
+import theme from './theme'
 
 import './index.css'
 
@@ -85,7 +87,7 @@ const App = () => {
   }
 
   return (
-    <>
+    <ThemeProvider theme={theme}>
       <CssBaseline enableColorScheme />
       <div className="homepage__container">
         <CategoryList
@@ -104,7 +106,7 @@ const App = () => {
           handleUpdateTask={handleUpdateTask}
         />
       </div>
-    </>
+    </ThemeProvider>
   )
 }
 
