@@ -1,33 +1,25 @@
-body {
-  margin: 0;
-  padding: 0;
-  background-color: #121212;
-  color: #eeeeee;
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-/* ========== List ========== */
-
 .homepage__container {
   display: grid;
-  grid-template-columns: 1fr 3fr 7fr 7fr;
-}
-
-.list {
-  padding: 20px;
-  border: solid rgba(121, 121, 121, 0.25);
-  border-width: 0 1px;
-  height: 100%;
-}
-
-.list__list-item {
-  list-style: none;
-  padding: 0;
+  grid-template-columns: 1fr 4fr 12fr 10fr;
 }
 
 /* ========== Tasklist ========== */
 .tasklist {
   grid-column: 3;
+  border: solid rgba(121, 121, 121, 0.25);
+  border-width: 0 1px;
+  padding: 20px;
+}
+
+.tasklist__heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tasklist__heading .container-1 {
+  display: flex;
+  align-items: flex-start;
 }
 
 .tasklist__list-name {
@@ -36,21 +28,16 @@ body {
   font-weight: 300;
 }
 
-.tasklist__new-task-input {
-  /* width: 100%;
-  padding: 10px;
-  border-radius: 5px;
-  border: none;
-  margin-top: 10px;
-  font-size: 0.9em;
-  background-color: #252222;
-  color: #e4d9d9; */
-}
-
 /* ========== Task ========== */
 
 .task {
-  border-bottom: solid rgba(121, 121, 121, 0.25) 1px;
+  /* border-bottom: solid rgba(121, 121, 121, 0.25) 1px; */
+  display: flex;
+  gap: 2px;
+  width: 100%;
+}
+
+.task-info {
   width: 100%;
 }
 

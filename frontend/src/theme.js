@@ -51,6 +51,15 @@ export const themeOptions = {
     },
     divider: 'rgba(255,255,255,0.12)',
   },
+  typography: {
+    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+    fontSize: 14,
+    fontWeightLight: 300,
+    fontWeightRegular: 400,
+    fontWeightMedium: 500,
+    fontWeightBold: 700,
+    htmlFontSize: 16,
+  },
 }
 
 const theme = createTheme(themeOptions)

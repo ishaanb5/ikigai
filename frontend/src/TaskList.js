@@ -1,8 +1,14 @@
 import { useState } from 'react'
 import PropTypes from 'prop-types'
+
 import InputBase from '@mui/material/InputBase'
+import List from '@mui/material/List'
+import ListItem from '@mui/material/ListItem'
+import MenuOpenIcon from '@mui/icons-material/MenuOpen'
+import SortIcon from '@mui/icons-material/Sort'
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
+
 import Task from './Task'
-import List from './List'
 
 const TaskList = ({
   tasks,
@@ -17,18 +23,20 @@ const TaskList = ({
     description: '',
   })
 
-  const createListItem = (task) => (
-    <Task
-      id={task.id}
-      title={task.title}
-      description={task.description}
-      completed={task.completed}
-      handleCompletion={handleTaskCompletion}
-      handleDelete={handleDeleteTask}
-      handleUpdate={handleUpdateTask}
-      dueBy={task.dueBy}
-    />
-  )
+  const renderedTasks = tasks.map((task) => (
+    <ListItem key={task.id}>
+      <Task
+        id={task.id}
+        title={task.title}
+        description={task.description}
+        completed={task.completed}
+        handleCompletion={handleTaskCompletion}
+        handleDelete={handleDeleteTask}
+        handleUpdate={handleUpdateTask}
+        dueBy={task.dueBy}
+      />
+    </ListItem>
+  ))
 
   const addTask = async ({ code }) => {
     if (code === 'Enter') {
@@ -39,31 +47,40 @@ const TaskList = ({
 
   return (
     <section className="tasklist">
-      <h1 className="tasklist__list-name">{currentList.name}</h1>
-      <InputBase
-        className="tasklist__new-task-input"
-        type="text"
-        value={newTask.title}
-        placeholder=" + Add a new task, press Enter to save."
-        onKeyDown={addTask}
-        onChange={(e) =>
-          setNewTask((prevState) => ({
-            ...prevState,
-            title: e.target.value,
-            listId: currentList.id,
-          }))
-        }
-      />
-      {tasks.length === 0 ? (
-        <p>No pending tasks!</p>
-      ) : (
-        <List
-          type={tasks}
-          itemKey="id"
-          className="list"
-          createListItem={createListItem}
-        />
-      )}
+      <List className="list">
+        <div className="tasklist__heading">
+          <div className="container-1">
+            <MenuOpenIcon sx={{ fontSize: '30px' }} color="secondary" />
+            <h1 className="tasklist__list-name">{currentList.name}</h1>
+          </div>
+          <div className="container-2">
+            <SortIcon fontSize="small" color="secondary" />
+            <MoreHorizIcon fontSize="small" color="secondary" />
+          </div>
+        </div>
+        <span>
+          <InputBase
+            type="text"
+            value={newTask.title}
+            placeholder=" + Add a new task, press Enter to save."
+            onKeyDown={addTask}
+            onChange={(e) =>
+              setNewTask((prevState) => ({
+                ...prevState,
+                title: e.target.value,
+                listId: currentList.id,
+              }))
+            }
+            fullWidth
+            sx={{
+              padding: '5px',
+              backgroundColor: 'background.paper',
+              borderRadius: '4px',
+            }}
+          />
+        </span>
+        {tasks.length === 0 ? <p>No pending tasks!</p> : renderedTasks}
+      </List>
     </section>
   )
 }

@@ -14,17 +14,14 @@ import MenuIcon from '@mui/icons-material/Menu'
 import InputBase from '@mui/material/InputBase'
 // import CatchingPokemonIcon from '@mui/icons-material/CatchingPokemon'
 
-const BootstrapDialog = styled(Dialog)(({ theme }) => {
-  console.log(theme)
-  return {
-    '& .MuiDialogContent-root': {
-      padding: theme.spacing(2),
-    },
-    '& .MuiDialogActions-root': {
-      padding: theme.spacing(1),
-    },
-  }
-})
+const BootstrapDialog = styled(Dialog)(({ theme }) => ({
+  '& .MuiDialogContent-root': {
+    padding: theme.spacing(2),
+  },
+  '& .MuiDialogActions-root': {
+    padding: theme.spacing(1),
+  },
+}))
 
 const BootstrapDialogTitle = (props) => {
   const { children, onClose, ...other } = props
@@ -103,6 +100,10 @@ const NewCategoryListModal = ({ saveNewList }) => {
   return (
     <div>
       <AddIcon onClick={handleClickOpen} />
+      {/*
+      - should a modal be used or a dialog
+      - make the dialog non-cancellable when clicked outside the modal
+      */}
       <BootstrapDialog
         onClose={handleClose}
         aria-labelledby="customized-dialog-title"

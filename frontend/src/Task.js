@@ -1,38 +1,44 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState } from 'react'
 import PropTypes from 'prop-types'
-import DeleteIcon from '@mui/icons-material/Delete'
+
+import Divider from '@mui/material/Divider'
+import InputBase from '@mui/material/InputBase'
+
+import ListItem from '@mui/material/ListItem'
+import ListItemButton from '@mui/material/ListItemButton'
+import Checkbox from '@mui/material/Checkbox'
+import ListItemIcon from '@mui/material/ListItemIcon'
+// import DeleteIcon from '@mui/icons-material/Delete'
 
 const Task = ({
   id,
   title,
   completed,
   handleCompletion,
-  handleDelete,
+  // handleDelete,
   handleUpdate,
-  dueBy,
+  // dueBy,
 }) => {
-  const [editable, setEditable] = useState(false)
   const [updatedTitle, setUpdatedTitle] = useState(title)
-  const inputRef = useRef()
-
-  useEffect(() => {
-    if (editable) {
-      inputRef.current.focus()
-    }
-  })
 
   return (
-    <>
-      <input
-        className="task__checkbox"
-        type="checkbox"
-        checked={completed}
-        id="task"
-        onChange={() => handleCompletion(id)}
-      />
-      {editable ? (
-        <input
-          ref={inputRef}
+    // secondary action for displaying due date
+    <ListItem disablePadding>
+      <ListItemButton onClick={() => handleCompletion(id)}>
+        <ListItemIcon>
+          <Checkbox
+            edge="start"
+            disableRipple
+            checked={completed}
+            tabIndex={-1}
+            disablePadding
+          />
+        </ListItemIcon>
+      </ListItemButton>
+
+      <div className="task-info">
+        <InputBase
+          fullWidth
           value={updatedTitle}
           onChange={(e) => {
             setUpdatedTitle(e.target.value)
@@ -40,7 +46,6 @@ const Task = ({
           }}
           onBlur={() => {
             handleUpdate(id, { id, completed, title: updatedTitle })
-            setEditable(false)
           }}
           onKeyDown={(e) => {
             if (e.key === 'Enter') {
@@ -48,31 +53,17 @@ const Task = ({
             }
           }}
         />
-      ) : (
-        <span
-          role="button"
-          tabIndex={0}
-          onClick={() => {
-            setEditable(true)
-          }}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') {
-              setEditable(true)
-            }
-          }}
-        >
-          {title}-{dueBy}
-        </span>
-      )}
-      <button
+        {/* <button
         type="button"
         onClick={() => {
           handleDelete(id, completed)
         }}
       >
         <DeleteIcon fill="red" />
-      </button>
-    </>
+      </button> */}
+        <Divider />
+      </div>
+    </ListItem>
   )
 }
 
@@ -80,14 +71,14 @@ Task.propTypes = {
   title: PropTypes.string.isRequired,
   completed: PropTypes.bool.isRequired,
   id: PropTypes.string.isRequired,
-  handleDelete: PropTypes.func.isRequired,
+  // handleDelete: PropTypes.func.isRequired,
   handleCompletion: PropTypes.func.isRequired,
   handleUpdate: PropTypes.func.isRequired,
-  dueBy: PropTypes.objectOf(Date),
+  // dueBy: PropTypes.objectOf(Date),
 }
 
-Task.defaultProps = {
-  dueBy: null,
-}
+// Task.defaultProps = {
+//   dueBy: null,
+// }
 
 export default Task
